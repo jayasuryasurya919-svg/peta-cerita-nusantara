@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang - Peta Budaya Nusantara</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tentang.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🏛️ PBN</div>
+    <div class="nav-links">
+      <a href="index.html">Beranda</a>
+      <a href="peta.html">Peta</a>
+      <a href="wayang.html">Wayang</a>
+      <a href="keris.html">Keris</a>
+      <a href="tombak.html">Tombak</a>
+      <a href="tentang.html" class="aktif">Tentang</a>
+    </div>
+  </nav>
+
+  <main>
+    <article class="tentang">
+      <h1>Tentang Peta Budaya Nusantara</h1>
+      <p class="tentang-lead">
+        Situs edukatif interaktif untuk mengenal cerita rakyat, candi, tarian, wayang, keris, dan tombak
+        dari berbagai penjuru Indonesia. Dibuat untuk 2026 International Digital Coding Competition,
+        Web Development Division.
+      </p>
+
+      <h2>Isi Konten</h2>
+      <div class="statistik" id="statistik"></div>
+
+      <h2>Cara Menjelajah</h2>
+      <ul>
+        <li>Di halaman <a href="peta.html">Peta</a>, klik pin untuk membaca cerita rakyat, candi, atau tarian dari daerah tersebut. Filter per pulau dan kolom pencarian membantu menyaring pin.</li>
+        <li>Halaman <a href="wayang.html">Wayang</a>, <a href="keris.html">Keris</a>, dan <a href="tombak.html">Tombak</a> berisi galeri yang bisa dicari secara langsung.</li>
+        <li>Cerita rakyat, candi, dan tarian dilengkapi kuis singkat. Status "sudah dibaca" tersimpan di browser Anda.</li>
+        <li>Ki Semar di pojok kanan bawah siap menjelaskan cara memakai situs ini kapan saja.</li>
+      </ul>
+
+      <h2>Sumber Aset</h2>
+      <ul>
+        <li><strong>Peta Indonesia:</strong> dibuat dari data <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> (domain publik), disederhanakan dan dikelompokkan menjadi tujuh wilayah pulau.</li>
+        <li><strong>Font:</strong> Playfair Display, Cinzel, dan Poppins dari Google Fonts.</li>
+        <li><strong>Teks konten:</strong> ditulis ulang dengan kata-kata sendiri berdasarkan kisah dan pengetahuan budaya yang beredar luas di masyarakat.</li>
+        <li><strong>Ikon dan pin:</strong> digambar sendiri dalam bentuk SVG. Efek suara dibuat langsung oleh browser.</li>
+      </ul>
+
+      <h2>Transparansi Penggunaan AI</h2>
+      <p>
+        Pengembangan proyek ini dibantu Claude (Anthropic) untuk diskusi arsitektur, penjelasan konsep,
+        pembuatan skrip konversi peta, serta saran perbaikan saat debugging. Penulisan kode final dan
+        konten dikerjakan oleh pengembang. Rincian lengkap ada di berkas README pada repositori proyek.
+      </p>
+
+      <h2>Teknologi</h2>
+      <p>HTML5, CSS3, dan JavaScript murni tanpa framework, tanpa database server. Data berada di <code>js/data-budaya.js</code>, status baca memakai <code>localStorage</code>, dan peta memakai SVG.</p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Peta Budaya Nusantara. Dibuat untuk International Digital Coding Competition.
+  </footer>
+
+  <div class="semar-widget" id="semar-widget">
+    <div class="semar-bubble hidden" id="semar-bubble">
+      <div class="semar-header">
+        <span class="semar-name">Ki Semar</span>
+        <button class="semar-close" id="semar-close">&times;</button>
+      </div>
+      <p class="semar-text" id="semar-text"></p>
+      <div class="semar-controls">
+        <span class="semar-step" id="semar-step"></span>
+        <button class="semar-next" id="semar-next"></button>
+      </div>
+    </div>
+    <button class="semar-avatar" id="semar-avatar" title="Bicara dengan Ki Semar">
+      <svg viewBox="0 0 100 100" width="56" height="56">
+        <circle cx="50" cy="50" r="45" fill="#2b1e10" stroke="#d4af37" stroke-width="3"/>
+        <path d="M50 15 Q55 25 50 35 Q45 25 50 15 Z" fill="#d4af37"/>
+        <circle cx="50" cy="48" r="22" fill="#f4e4bc"/>
+        <circle cx="42" cy="45" r="3" fill="#2b1e10"/>
+        <circle cx="58" cy="45" r="3" fill="#2b1e10"/>
+        <path d="M40 55 Q50 65 60 55" fill="none" stroke="#2b1e10" stroke-width="3" stroke-linecap="round"/>
+        <path d="M25 75 Q50 60 75 75 Q50 95 25 75 Z" fill="#d4af37"/>
+      </svg>
+    </button>
+  </div>
+
+  <script src="js/data-budaya.js"></script>
+  <script src="js/tentang.js"></script>
+  <script src="js/semar.js"></script>
+</body>
+</html>

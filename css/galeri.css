@@ -1,0 +1,165 @@
+.galeri-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 40px;
+  text-align: center;
+}
+
+.galeri-section h2 {
+  font-family: var(--font-judul);
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.galeri-sub {
+  color: var(--coklat-sedang);
+  margin-bottom: 36px;
+}
+
+.galeri-grid, .galeri-grid-dalam {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 24px;
+  text-align: left;
+}
+
+.galeri-grid-dalam {
+  margin-top: 28px;
+}
+
+.galeri-kelompok-judul {
+  font-family: var(--font-judul);
+  font-size: 1.3rem;
+  color: var(--coklat-tua);
+  text-align: left;
+  margin: 32px 0 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--emas);
+}
+
+.galeri-kelompok-judul:first-child {
+  margin-top: 0;
+}
+
+/* ===== KARTU GALERI ===== */
+.galeri-card {
+  position: relative;
+  background: var(--cream);
+  border: 2px solid var(--emas);
+  border-left-width: 6px;
+  border-radius: 14px;
+  padding: 28px 24px 24px;
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  animation: munculKartu 0.6s cubic-bezier(0.22, 1.2, 0.36, 1) forwards;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.4s ease;
+}
+
+@keyframes munculKartu {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.galeri-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(212, 175, 55, 0.3);
+  border-color: var(--emas-terang);
+}
+
+.galeri-card.keluar {
+  transform: scale(1.06);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.galeri-badge {
+  position: absolute;
+  top: -22px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cream-terang);
+  border: 2px solid var(--emas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.galeri-badge svg {
+  width: 24px;
+  height: 24px;
+}
+
+.galeri-card h3 {
+  font-family: var(--font-judul);
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+}
+
+.galeri-card .galeri-daerah {
+  color: var(--merah-bata);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.galeri-card p {
+  font-size: 0.95rem;
+  color: var(--coklat-sedang);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ===== PENCARIAN ===== */
+.galeri-kontrol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.galeri-cari {
+  font-family: inherit;
+  width: min(360px, 100%);
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--coklat-sedang);
+  background: var(--cream-terang);
+  color: var(--coklat-tua);
+}
+
+.galeri-cari:focus-visible {
+  outline: 3px solid var(--emas-terang);
+  outline-offset: 2px;
+}
+
+.galeri-jumlah {
+  font-size: 0.9rem;
+  color: var(--coklat-sedang);
+}
+
+.info-kosong {
+  margin-bottom: 12px;
+  color: var(--merah-bata);
+  font-weight: 500;
+}
+
+.tersembunyi {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .galeri-section {
+    padding: 40px 20px 30px;
+  }
+  .galeri-section h2 {
+    font-size: 1.8rem;
+  }
+}

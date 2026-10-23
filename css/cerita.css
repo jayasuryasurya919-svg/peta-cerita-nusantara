@@ -1,0 +1,162 @@
+.cerita {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 50px 30px;
+}
+
+.kembali {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: var(--merah-bata);
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.kembali:hover {
+  color: var(--coklat-tua);
+}
+
+.cerita h1 {
+  font-family: var(--font-judul);
+  font-size: 2.6rem;
+  margin-bottom: 6px;
+}
+
+.cerita-daerah {
+  color: var(--merah-bata);
+  font-weight: 600;
+  margin-bottom: 30px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--emas);
+}
+
+#cerita-isi p {
+  line-height: 1.9;
+  margin-bottom: 20px;
+  font-size: 1.05rem;
+}
+
+/* ===== PROGRESS BAR + KERIS ===== */
+.progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  z-index: 999;
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--coklat-sedang), var(--emas), var(--emas-terang));
+  transition: width 0.1s ease-out;
+}
+
+.progress-keris {
+  position: absolute;
+  top: -8px;
+  left: 0%;
+  transform: translateX(-50%);
+  transition: left 0.1s ease-out;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  pointer-events: none;
+}
+
+/* ===== KUIS ===== */
+#kuis-wadah:not(:empty) {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid var(--emas);
+}
+
+#kuis-wadah h2 {
+  font-family: var(--font-judul);
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+}
+
+.soal {
+  margin-bottom: 24px;
+}
+
+.soal p {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.pilihan-item {
+  display: block;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border: 1.5px solid var(--coklat-sedang);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pilihan-item:hover {
+  background: var(--cream);
+}
+
+.pilihan-item input {
+  margin-right: 10px;
+}
+
+.pilihan-item.benar {
+  background: #dcecd8;
+  border-color: var(--hijau-tua);
+}
+
+.pilihan-item.salah {
+  background: #f3d9d3;
+  border-color: var(--merah-bata);
+}
+
+#btn-cek-kuis {
+  margin-top: 10px;
+}
+
+.hasil-kuis {
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--coklat-tua);
+}
+
+/* ===== NAVIGASI ANTAR KONTEN ===== */
+.nav-cerita {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 2px solid var(--emas);
+}
+
+.btn-nav {
+  font-weight: 600;
+  color: var(--merah-bata);
+  transition: color 0.2s;
+}
+
+.btn-nav:hover {
+  color: var(--coklat-tua);
+}
+
+/* ===== REVEAL SAAT SCROLL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.terlihat {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .cerita { padding: 30px 20px; }
+  .cerita h1 { font-size: 2rem; }
+  .nav-cerita { flex-direction: column; gap: 12px; }
+}

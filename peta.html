@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Interaktif - Peta Budaya Nusantara</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/peta.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">🏛️ PBN</div>
+    <div class="nav-links">
+      <a href="index.html">Beranda</a>
+      <a href="peta.html" class="aktif">Peta</a>
+      <a href="wayang.html">Wayang</a>
+      <a href="keris.html">Keris</a>
+      <a href="tombak.html">Tombak</a>
+      <a href="tentang.html">Tentang</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="peta-halaman">
+      <header class="peta-kepala">
+        <h2>Jelajahi Peta Budaya</h2>
+        <p class="peta-sub">Perbesar, geser, lalu klik pulau atau pin untuk menemukan budaya dari tiap daerah.</p>
+      </header>
+
+      <div class="kontrol">
+        <div class="tab-pulau" id="tab-pulau">
+          <button class="tab aktif" data-pulau="semua">Semua</button>
+          <button class="tab" data-pulau="sumatra">Sumatra</button>
+          <button class="tab" data-pulau="jawa">Jawa</button>
+          <button class="tab" data-pulau="kalimantan">Kalimantan</button>
+          <button class="tab" data-pulau="sulawesi">Sulawesi</button>
+          <button class="tab" data-pulau="nusa-tenggara">Bali-Nusa Tenggara</button>
+          <button class="tab" data-pulau="maluku">Maluku</button>
+          <button class="tab" data-pulau="papua">Papua</button>
+        </div>
+        <input type="search" id="cari" class="cari" placeholder="Cari cerita atau daerah..." aria-label="Cari konten di peta">
+      </div>
+
+      <div class="chip-kategori" id="chip-kategori" aria-label="Filter kategori"></div>
+
+      <div class="peta-tata">
+        <div class="panggung" id="panggung">
+          <div class="kamera" id="kamera">
+            <div class="peta-svg" id="peta-svg"></div>
+            <div id="marker-container"></div>
+          </div>
+
+          <div class="tip-pulau" id="tip-pulau" hidden></div>
+
+          <div class="kontrol-zoom">
+            <button type="button" id="zoom-masuk" aria-label="Perbesar" title="Perbesar (+)">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button type="button" id="zoom-keluar" aria-label="Perkecil" title="Perkecil (-)">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+            </button>
+            <button type="button" id="zoom-reset" aria-label="Lihat semua wilayah" title="Lihat semua (0)">
+              <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+            </button>
+          </div>
+
+          <p class="petunjuk-peta" id="petunjuk">Scroll untuk zoom · seret untuk menggeser · klik pulau untuk fokus</p>
+          <p class="info-kosong" id="info-kosong" hidden>Belum ada konten yang cocok dengan filter ini.</p>
+        </div>
+
+        <aside class="panel" id="panel" aria-live="polite">
+          <div class="panel-kepala">
+            <p class="panel-eyebrow" id="panel-eyebrow">Semua wilayah</p>
+            <h3 id="panel-judul">Pilih pulau atau pin</h3>
+            <p class="peta-progres" id="peta-progres"></p>
+            <div class="progres-bar" aria-hidden="true"><span id="progres-isi"></span></div>
+          </div>
+          <div class="panel-isi" id="panel-isi"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Peta Budaya Nusantara. Dibuat untuk International Digital Coding Competition.
+  </footer>
+
+  <div class="semar-widget" id="semar-widget">
+    <div class="semar-bubble hidden" id="semar-bubble">
+      <div class="semar-header">
+        <span class="semar-name">Ki Semar</span>
+        <button class="semar-close" id="semar-close">&times;</button>
+      </div>
+      <p class="semar-text" id="semar-text"></p>
+      <div class="semar-controls">
+        <span class="semar-step" id="semar-step"></span>
+        <button class="semar-next" id="semar-next"></button>
+      </div>
+    </div>
+    <button class="semar-avatar" id="semar-avatar" title="Bicara dengan Ki Semar">
+      <svg viewBox="0 0 100 100" width="56" height="56">
+        <circle cx="50" cy="50" r="45" fill="#2b1e10" stroke="#d4af37" stroke-width="3"/>
+        <path d="M50 15 Q55 25 50 35 Q45 25 50 15 Z" fill="#d4af37"/>
+        <circle cx="50" cy="48" r="22" fill="#f4e4bc"/>
+        <circle cx="42" cy="45" r="3" fill="#2b1e10"/>
+        <circle cx="58" cy="45" r="3" fill="#2b1e10"/>
+        <path d="M40 55 Q50 65 60 55" fill="none" stroke="#2b1e10" stroke-width="3" stroke-linecap="round"/>
+        <path d="M25 75 Q50 60 75 75 Q50 95 25 75 Z" fill="#d4af37"/>
+      </svg>
+    </button>
+  </div>
+
+  <script src="js/data-budaya.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/peta.js"></script>
+  <script src="js/semar.js"></script>
+</body>
+</html>

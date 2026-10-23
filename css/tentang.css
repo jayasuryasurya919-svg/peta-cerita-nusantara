@@ -1,0 +1,69 @@
+.tentang {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 50px 30px;
+}
+
+.tentang h1 {
+  font-family: var(--font-judul);
+  font-size: 2.6rem;
+  margin-bottom: 8px;
+}
+
+.tentang-lead {
+  color: var(--coklat-sedang);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--emas);
+}
+
+.tentang h2 {
+  font-family: var(--font-judul);
+  font-size: 1.5rem;
+  margin: 36px 0 12px;
+}
+
+.tentang p,
+.tentang li {
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.tentang ul { padding-left: 22px; }
+
+.tentang a:not(.btn-cta) {
+  color: var(--merah-bata);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.statistik {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.statistik-kotak {
+  background: var(--cream);
+  border: 2px solid var(--emas);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.statistik-angka {
+  display: block;
+  font-family: var(--font-judul);
+  font-size: 2rem;
+  color: var(--merah-bata);
+}
+
+.statistik-label { font-size: 0.85rem; color: var(--coklat-sedang); }
+
+@media (max-width: 600px) {
+  .tentang { padding: 30px 20px; }
+  .tentang h1 { font-size: 2rem; }
+}

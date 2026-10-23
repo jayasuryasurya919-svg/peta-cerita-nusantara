@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Budaya Nusantara</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/beranda.css">
+</head>
+<body class="halaman-beranda">
+  <nav class="navbar">
+    <div class="logo">🏛️ PBN</div>
+    <div class="nav-links">
+      <a href="index.html" class="aktif">Beranda</a>
+      <a href="peta.html">Peta</a>
+      <a href="wayang.html">Wayang</a>
+      <a href="keris.html">Keris</a>
+      <a href="tombak.html">Tombak</a>
+      <a href="tentang.html">Tentang</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO bergaya layar kelir -->
+    <section class="hero-kelir">
+      <div class="hero-sorot" aria-hidden="true"></div>
+
+      <svg class="hero-gunungan" viewBox="0 0 120 262" aria-hidden="true">
+        <path d="M60 4C66 40 112 80 112 150C112 215 90 250 60 256C30 250 8 215 8 150C8 80 54 40 60 4Z"/>
+        <path d="M60 22C64 52 98 88 98 150C98 205 82 236 60 241C38 236 22 205 22 150C22 88 56 52 60 22Z"/>
+        <path d="M44 241V200Q44 184 60 184Q76 184 76 200V241"/>
+        <path d="M60 58V184"/>
+        <path d="M60 100Q40 92 34 76M60 100Q80 92 86 76M60 130Q38 122 30 104M60 130Q82 122 90 104M60 158Q40 152 32 136M60 158Q80 152 88 136"/>
+      </svg>
+
+      <div class="hero-isi">
+        <div class="hero-teks">
+          <p class="hero-eyebrow">Warisan Budaya Indonesia</p>
+          <h1>Peta Budaya Nusantara</h1>
+          <p class="hero-deskripsi">Jelajahi cerita rakyat, candi, tarian, wayang, keris, dan tombak dari seluruh penjuru Indonesia melalui peta dan galeri interaktif.</p>
+          <div class="hero-aksi">
+            <a href="peta.html" class="btn-cta">Mulai Jelajahi →</a>
+            <a href="wayang.html" class="btn-hantu">Kenali Wayang</a>
+          </div>
+        </div>
+
+        <div class="hero-peta" id="hero-peta" role="img" aria-label="Peta Indonesia dengan titik lokasi konten budaya"></div>
+      </div>
+    </section>
+
+    <div class="pita-batik" aria-hidden="true"></div>
+
+    <!-- Statistik -->
+    <section class="statistik-beranda" aria-label="Ringkasan isi situs">
+      <div class="statistik-item">
+        <span class="statistik-angka" id="stat-konten" data-target="0">0</span>
+        <span class="statistik-label">Konten budaya</span>
+      </div>
+      <div class="statistik-item">
+        <span class="statistik-angka" id="stat-pulau" data-target="0">0</span>
+        <span class="statistik-label">Wilayah pulau</span>
+      </div>
+      <div class="statistik-item">
+        <span class="statistik-angka" id="stat-kategori" data-target="0">0</span>
+        <span class="statistik-label">Kategori</span>
+      </div>
+    </section>
+
+    <!-- Kategori -->
+    <section class="kategori-beranda">
+      <h2>Jelajahi Menurut Kategori</h2>
+      <p class="kategori-sub">Tiga kategori tampil sebagai pin di peta, tiga lainnya sebagai galeri khusus.</p>
+      <div class="kategori-grid" id="kategori-grid"></div>
+    </section>
+
+    <!-- Ajakan -->
+    <section class="ajakan">
+      <h2>Siap menjelajah?</h2>
+      <p>Mulai dari peta, klik satu pin, lalu uji pemahamanmu lewat kuis singkat.</p>
+      <a href="peta.html" class="btn-cta">Buka Peta Interaktif →</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Peta Budaya Nusantara. Dibuat untuk International Digital Coding Competition.
+  </footer>
+
+  <script src="js/data-budaya.js"></script>
+  <script src="js/beranda.js"></script>
+</body>
+</html>
