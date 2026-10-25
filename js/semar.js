@@ -1,22 +1,53 @@
-
 "use strict";
 
-const langkahSemar = [
+const BAGIAN_SEMAR = [
   {
-    teks: "Sugeng rawuh! Saya Ki Semar, akan menemanimu menjelajahi Peta Budaya Nusantara.",
-    tombol: "Lanjut ➔"
+    id: "beranda",
+    nama: "Beranda",
+    href: "index.html",
+    penjelasan: "Beranda adalah titik awal untuk mengenal Peta Cerita Nusantara. Gunakan tombol jelajah atau menu atas untuk memilih bagian yang ingin dibuka."
   },
   {
-    teks: "Klik pin di peta untuk membaca cerita rakyat, candi, atau tarian. Jelajahi juga galeri Wayang, Keris, dan Tombak di menu atas.",
-    tombol: "Lanjut ➔"
+    id: "peta",
+    nama: "Peta",
+    href: "peta.html",
+    penjelasan: "Peta menampilkan cerita rakyat, candi, dan tarian berdasarkan wilayah. Pilih pulau atau gunakan pencarian, lalu klik pin untuk membuka kisah dan kuisnya."
   },
   {
-    teks: "Cerita rakyat, candi, dan tarian punya kuis singkat di akhir. Selamat menjelajah!",
-    tombol: "Mengerti ✓"
+    id: "detail",
+    nama: "Detail budaya",
+    href: "detail.html",
+    penjelasan: "Halaman detail memuat kisah atau penjelasan budaya, informasi daerah, dan kuis bila tersedia. Baca isinya lalu coba jawab kuis di bagian bawah."
+  },
+  {
+    id: "wayang",
+    nama: "Galeri Wayang",
+    href: "wayang.html",
+    penjelasan: "Galeri Wayang berisi tokoh-tokoh pewayangan. Cari nama tokoh atau pilih kelompok untuk menemukan tokoh yang ingin kamu kenali."
+  },
+  {
+    id: "keris",
+    nama: "Galeri Keris",
+    href: "keris.html",
+    penjelasan: "Galeri Keris mengenalkan ragam dapur dan ciri bilahnya. Gunakan pencarian dan kelompok yang tersedia untuk menyaring koleksi."
+  },
+  {
+    id: "tombak",
+    nama: "Galeri Tombak",
+    href: "tombak.html",
+    penjelasan: "Galeri Tombak menjelaskan ragam dapur tombak, ciri bilah, dan makna yang tercantum pada setiap entri. Cari atau saring daftar untuk menjelajahinya."
+  },
+  {
+    id: "tentang",
+    nama: "Tentang situs",
+    href: "tentang.html",
+    penjelasan: "Bagian Tentang menjelaskan tujuan situs, cara menjelajah, sumber data, dan teknologi yang digunakan."
   }
 ];
 
-let langkahSaatIni = 0;
+const KUNCI_BAGIAN = "pbn_bagian_dikunjungi_v1";
+
+let bagianSaatIni = cariBagianSaatIni();
 
 const bubbleSemar = document.getElementById("semar-bubble");
 const teksSemar = document.getElementById("semar-text");
@@ -25,147 +56,222 @@ const tombolLanjut = document.getElementById("semar-next");
 const tombolTutup = document.getElementById("semar-close");
 const avatarSemar = document.getElementById("semar-avatar");
 
-const KUNCI_PANDUAN = "pbn_panduan_selesai";
+function cariBagianSaatIni() {
+  const namaFile = window.location.pathname.split("/").pop().toLowerCase();
+  const petaHalaman = {
+    "": "beranda",
+    "index.html": "beranda",
+    "peta.html": "peta",
+    "detail.html": "detail",
+    "wayang.html": "wayang",
+    "keris.html": "keris",
+    "tombak.html": "tombak",
+    "tentang.html": "tentang"
+  };
+  const id = petaHalaman[namaFile] || "beranda";
+  return BAGIAN_SEMAR.find((bagian) => bagian.id === id) || BAGIAN_SEMAR[0];
+}
 
-/**
- * Membaca status panduan.
- * Jika penyimpanan browser tidak tersedia, panduan tetap berfungsi.
- */
-function bacaStatusPanduan() {
+function bacaBagianDikunjungi() {
   try {
-    return localStorage.getItem(KUNCI_PANDUAN) === "1";
+    const tersimpan = JSON.parse(localStorage.getItem(KUNCI_BAGIAN) || "[]");
+    if (!Array.isArray(tersimpan)) return [];
+
+    const idSah = new Set(BAGIAN_SEMAR.map((bagian) => bagian.id));
+    return [...new Set(tersimpan.filter((id) => idSah.has(id)))];
   } catch (error) {
-    return false;
+    return [];
   }
 }
 
-/**
- * Menyimpan status panduan telah selesai atau ditutup.
- */
-function simpanStatusPanduan() {
+function simpanBagianDikunjungi(daftar) {
   try {
-    localStorage.setItem(KUNCI_PANDUAN, "1");
+    localStorage.setItem(KUNCI_BAGIAN, JSON.stringify(daftar));
   } catch (error) {
-    // Panduan tetap dapat digunakan tanpa localStorage.
+    // Panduan tetap dapat dipakai saat penyimpanan browser tidak tersedia.
   }
 }
 
-/**
- * Memperbarui status aksesibilitas avatar.
- */
-function perbaruiStatusAvatar(terbuka) {
-  if (!avatarSemar) return;
-
-  avatarSemar.setAttribute("aria-expanded", String(terbuka));
+function tandaiBagianDikunjungi() {
+  const daftar = bacaBagianDikunjungi();
+  if (!daftar.includes(bagianSaatIni.id)) {
+    daftar.push(bagianSaatIni.id);
+    simpanBagianDikunjungi(daftar);
+  }
+  return daftar;
 }
 
-/**
- * Menutup panduan Ki Semar.
- */
+function buatTautanBagian(bagian) {
+  if (bagian.id !== "detail") return bagian.href;
+
+  const data = typeof dataLengkap !== "undefined" && Array.isArray(dataLengkap)
+    ? dataLengkap
+    : [];
+  const contoh = data.find((entri) => entri.kategori === "cerita") || data[0];
+  const id = contoh ? contoh.id : "malin-kundang";
+  return `detail.html?id=${encodeURIComponent(id)}`;
+}
+
+function buatPanelJelajah() {
+  if (!bubbleSemar || bubbleSemar.querySelector(".semar-explorer")) return;
+
+  const panel = document.createElement("details");
+  panel.className = "semar-explorer";
+  panel.setAttribute("aria-label", "Bagian situs dan status penjelajahan");
+
+  const judul = document.createElement("summary");
+  judul.className = "semar-explorer-title";
+  judul.textContent = "Lihat semua bagian";
+
+  const ringkasan = document.createElement("p");
+  ringkasan.className = "semar-progress";
+  ringkasan.id = "semar-progress";
+
+  const daftar = document.createElement("ul");
+  daftar.className = "semar-section-list";
+  daftar.id = "semar-section-list";
+
+  panel.append(judul, ringkasan, daftar);
+
+  const kontrol = bubbleSemar.querySelector(".semar-controls");
+  if (kontrol) bubbleSemar.insertBefore(panel, kontrol);
+  else bubbleSemar.appendChild(panel);
+}
+
+function penjelasanBagianAktif() {
+  if (bagianSaatIni.id !== "detail") return bagianSaatIni.penjelasan;
+
+  const id = new URLSearchParams(window.location.search).get("id");
+  const data = typeof dataLengkap !== "undefined" && Array.isArray(dataLengkap)
+    ? dataLengkap
+    : [];
+  const entri = data.find((item) => item.id === id);
+  if (!entri) return bagianSaatIni.penjelasan;
+
+  return `Kamu sedang membaca ${entri.judul} dari ${entri.daerah}. Bagian ini memuat sinopsis, cerita atau penjelasan budaya, dan kuis bila tersedia.`;
+}
+
+function buatBarisBagian(bagian, sudahDikunjungi) {
+  const item = document.createElement("li");
+  item.className = "semar-section-item";
+
+  const tautan = document.createElement("a");
+  tautan.className = "semar-section-link";
+  tautan.href = buatTautanBagian(bagian);
+
+  if (bagian.id === bagianSaatIni.id) {
+    tautan.classList.add("is-current");
+    tautan.setAttribute("aria-current", "page");
+  }
+
+  const nama = document.createElement("span");
+  nama.className = "semar-section-name";
+  nama.textContent = bagian.nama;
+
+  const status = document.createElement("span");
+  status.className = "semar-section-status";
+  if (bagian.id === bagianSaatIni.id) status.textContent = "Di sini";
+  else status.textContent = sudahDikunjungi ? "Sudah dibuka" : "Belum dibuka";
+
+  tautan.append(nama, status);
+  const keterangan = document.createElement("p");
+  keterangan.className = "semar-section-description";
+  keterangan.textContent = bagian.penjelasan;
+
+  item.append(tautan, keterangan);
+  return item;
+}
+
+function perbaruiPanduan() {
+  if (!bubbleSemar || !teksSemar) return;
+
+  buatPanelJelajah();
+
+  const dikunjungi = tandaiBagianDikunjungi();
+  const belumDikunjungi = BAGIAN_SEMAR.filter(
+    (bagian) => !dikunjungi.includes(bagian.id)
+  );
+
+  teksSemar.textContent = `Kita sedang di ${bagianSaatIni.nama}. ${penjelasanBagianAktif()}`;
+
+  const ringkasan = document.getElementById("semar-progress");
+  if (ringkasan) {
+    ringkasan.textContent = belumDikunjungi.length
+      ? `${dikunjungi.length} dari ${BAGIAN_SEMAR.length} bagian sudah dibuka. Bagian yang belum dijelajahi ditandai di bawah.`
+      : `Hebat, semua ${BAGIAN_SEMAR.length} bagian sudah kamu buka. Kamu bisa menjelajahinya lagi kapan saja.`;
+  }
+
+  const judulJelajah = bubbleSemar.querySelector(".semar-explorer-title");
+  if (judulJelajah) {
+    judulJelajah.textContent = `Jejak penjelajahan · ${dikunjungi.length}/${BAGIAN_SEMAR.length}`;
+  }
+
+  const daftar = document.getElementById("semar-section-list");
+  if (daftar) {
+    daftar.replaceChildren(
+      ...BAGIAN_SEMAR.map((bagian) =>
+        buatBarisBagian(bagian, dikunjungi.includes(bagian.id))
+      )
+    );
+  }
+
+  if (stepSemar) {
+    stepSemar.textContent = `${dikunjungi.length}/${BAGIAN_SEMAR.length} dibuka`;
+  }
+
+  if (tombolLanjut) {
+    const rekomendasi = belumDikunjungi[0] || BAGIAN_SEMAR.find((bagian) => bagian.id === "peta");
+    tombolLanjut.textContent = belumDikunjungi.length
+      ? `Arahkan ke ${rekomendasi.nama}`
+      : "Jelajahi Peta lagi";
+    tombolLanjut.dataset.href = buatTautanBagian(rekomendasi);
+  }
+}
+
 function sembunyikanPanduan() {
   if (!bubbleSemar) return;
-
   bubbleSemar.classList.add("hidden");
-  perbaruiStatusAvatar(false);
+  if (avatarSemar) avatarSemar.setAttribute("aria-expanded", "false");
 }
 
-/**
- * Menampilkan panduan Ki Semar.
- */
 function tampilkanPanduan() {
   if (!bubbleSemar) return;
-
+  perbaruiPanduan();
   bubbleSemar.classList.remove("hidden");
-  perbaruiStatusAvatar(true);
-
-  tampilkanLangkah();
+  if (avatarSemar) avatarSemar.setAttribute("aria-expanded", "true");
 }
 
-/**
- * Menampilkan langkah panduan yang sedang aktif.
- */
-function tampilkanLangkah() {
-  if (
-    !bubbleSemar ||
-    !teksSemar ||
-    !stepSemar ||
-    !tombolLanjut
-  ) {
-    return;
-  }
-
-  // Semua langkah sudah selesai.
-  if (langkahSaatIni >= langkahSemar.length) {
-    sembunyikanPanduan();
-    simpanStatusPanduan();
-    langkahSaatIni = 0;
-    return;
-  }
-
-  const langkah = langkahSemar[langkahSaatIni];
-
-  teksSemar.textContent = langkah.teks;
-  tombolLanjut.textContent = langkah.tombol;
-
-  stepSemar.textContent =
-    `${langkahSaatIni + 1}/${langkahSemar.length}`;
-}
-
-/**
- * Tombol lanjut ke langkah berikutnya.
- */
-if (tombolLanjut) {
-  tombolLanjut.addEventListener("click", function () {
-    langkahSaatIni++;
-    tampilkanLangkah();
+if (avatarSemar) {
+  avatarSemar.setAttribute("aria-controls", "semar-bubble");
+  avatarSemar.setAttribute("aria-label", "Buka panduan dan progres Ki Semar");
+  avatarSemar.setAttribute("aria-expanded", "false");
+  avatarSemar.addEventListener("click", function () {
+    if (bubbleSemar && bubbleSemar.classList.contains("hidden")) tampilkanPanduan();
+    else sembunyikanPanduan();
   });
 }
 
-/**
- * Tombol tutup panduan.
- */
 if (tombolTutup) {
+  tombolTutup.setAttribute("aria-label", "Tutup panduan Ki Semar");
   tombolTutup.addEventListener("click", function () {
     sembunyikanPanduan();
-    simpanStatusPanduan();
   });
 }
 
-/**
- * Avatar untuk membuka atau menutup panduan.
- */
-if (avatarSemar) {
-  // Pastikan atribut aksesibilitas tersedia meskipun
-  // atribut tersebut belum ditambahkan di HTML.
-  avatarSemar.setAttribute("aria-controls", "semar-bubble");
-  avatarSemar.setAttribute(
-    "aria-label",
-    "Buka atau tutup panduan Ki Semar"
-  );
-  avatarSemar.setAttribute("aria-expanded", "false");
-
-  avatarSemar.addEventListener("click", function () {
-    if (!bubbleSemar) return;
-
-    if (bubbleSemar.classList.contains("hidden")) {
-      // Membuka kembali dari langkah pertama.
-      langkahSaatIni = 0;
-      tampilkanPanduan();
-    } else {
-      sembunyikanPanduan();
-    }
+if (tombolLanjut) {
+  tombolLanjut.addEventListener("click", function () {
+    const tujuan = tombolLanjut.dataset.href;
+    if (tujuan) window.location.href = tujuan;
   });
 }
 
-/**
- * Inisialisasi panduan saat halaman dibuka.
- * Panduan otomatis tampil jika pengguna belum menyelesaikannya.
- */
 if (bubbleSemar) {
-  if (bacaStatusPanduan()) {
-    sembunyikanPanduan();
-  } else {
-    langkahSaatIni = 0;
-    tampilkanPanduan();
-  }
+  perbaruiPanduan();
+  sembunyikanPanduan();
 }
+
+window.addEventListener("storage", function (event) {
+  if (event.key === KUNCI_BAGIAN && bubbleSemar && !bubbleSemar.classList.contains("hidden")) {
+    perbaruiPanduan();
+  }
+});

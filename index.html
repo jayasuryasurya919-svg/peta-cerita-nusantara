@@ -3,15 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peta Budaya Nusantara</title>
+  <title>Peta Cerita Nusantara</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/beranda.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-peta-cerita.svg">
 </head>
 <body class="halaman-beranda">
   <nav class="navbar">
-    <div class="logo">🏛️ PBN</div>
+    <a href="index.html" class="logo" aria-label="Peta Cerita Nusantara, beranda">
+      <img src="assets/logo-peta-cerita.svg" alt="" width="44" height="44">
+      <span class="logo-lockup"><span class="logo-name">Peta Cerita</span><span class="logo-kicker">Nusantara</span></span>
+    </a>
     <div class="nav-links">
       <a href="index.html" class="aktif">Beranda</a>
       <a href="peta.html">Peta</a>
@@ -38,7 +42,7 @@
       <div class="hero-isi">
         <div class="hero-teks">
           <p class="hero-eyebrow">Warisan Budaya Indonesia</p>
-          <h1>Peta Budaya Nusantara</h1>
+          <h1><span>Peta Cerita</span><span>Nusantara</span></h1>
           <p class="hero-deskripsi">Jelajahi cerita rakyat, candi, tarian, wayang, keris, dan tombak dari seluruh penjuru Indonesia melalui peta dan galeri interaktif.</p>
           <div class="hero-aksi">
             <a href="peta.html" class="btn-cta">Mulai Jelajahi →</a>
@@ -84,10 +88,36 @@
   </main>
 
   <footer class="footer">
-    &copy; 2026 Peta Budaya Nusantara. Dibuat untuk International Digital Coding Competition.
+    &copy; 2026 Peta Cerita Nusantara. Dibuat untuk International Digital Coding Competition.
   </footer>
+
+  <div class="semar-widget" id="semar-widget">
+    <div class="semar-bubble hidden" id="semar-bubble">
+      <div class="semar-header">
+        <span class="semar-name">Ki Semar</span>
+        <button class="semar-close" id="semar-close" aria-label="Tutup panduan">&times;</button>
+      </div>
+      <p class="semar-text" id="semar-text"></p>
+      <div class="semar-controls">
+        <span class="semar-step" id="semar-step"></span>
+        <button class="semar-next" id="semar-next"></button>
+      </div>
+    </div>
+    <button class="semar-avatar" id="semar-avatar" type="button" title="Bicara dengan Ki Semar">
+      <svg viewBox="0 0 100 100" width="56" height="56" aria-hidden="true">
+        <circle cx="50" cy="50" r="45" fill="#2b1e10" stroke="#d4af37" stroke-width="3"/>
+        <path d="M50 15 Q55 25 50 35 Q45 25 50 15 Z" fill="#d4af37"/>
+        <circle cx="50" cy="48" r="22" fill="#f4e4bc"/>
+        <circle cx="42" cy="45" r="3" fill="#2b1e10"/>
+        <circle cx="58" cy="45" r="3" fill="#2b1e10"/>
+        <path d="M40 55 Q50 65 60 55" fill="none" stroke="#2b1e10" stroke-width="3" stroke-linecap="round"/>
+        <path d="M25 75 Q50 60 75 75 Q50 95 25 75 Z" fill="#d4af37"/>
+      </svg>
+    </button>
+  </div>
 
   <script src="js/data-budaya.js"></script>
   <script src="js/beranda.js"></script>
+  <script src="js/semar.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 const kategoriHalaman = document.body.dataset.kategori;
 const wadahGaleri = document.getElementById("galeri-grid");
 
-const daftar = dataBudaya.filter(function (item) {
+const daftar = dataLengkap.filter(function (item) {
   return item.kategori === kategoriHalaman;
 });
 
@@ -86,14 +86,35 @@ function buatKartu(item) {
   kartu.style.animationDelay = (Math.min(urutanKartu, 15) * 0.08) + "s";
   urutanKartu++;
 
-  kartu.innerHTML =
-    '<div class="galeri-badge" style="border-color:' + warna + '">' +
-      '<svg viewBox="0 0 24 24" fill="' + warna + '" stroke="' + warna + '" stroke-width="0">' + ikon + '</svg>' +
-    '</div>' +
-    "<h3>" + item.judul + "</h3>" +
-    "<p class='galeri-daerah'>" + item.daerah + "</p>" +
-    "<p>" + item.sinopsis + "</p>" +
-    "<a href='detail.html?id=" + item.id + "' class='btn-cta'>Baca Selengkapnya</a>";
+  const badge = document.createElement("div");
+  badge.className = "galeri-badge";
+  badge.style.borderColor = warna;
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", warna);
+  svg.setAttribute("stroke", warna);
+  svg.setAttribute("stroke-width", "0");
+  // Isi ikon berasal dari konstanta SVG internal, bukan dari data konten.
+  svg.innerHTML = ikon;
+  badge.appendChild(svg);
+
+  const judul = document.createElement("h3");
+  judul.textContent = item.judul;
+
+  const daerah = document.createElement("p");
+  daerah.className = "galeri-daerah";
+  daerah.textContent = item.daerah;
+
+  const sinopsis = document.createElement("p");
+  sinopsis.textContent = item.sinopsis;
+
+  const tautan = document.createElement("a");
+  tautan.className = "btn-cta";
+  tautan.href = "detail.html?id=" + encodeURIComponent(item.id);
+  tautan.textContent = "Baca Selengkapnya";
+
+  kartu.append(badge, judul, daerah, sinopsis, tautan);
 
   // Transisi singkat sebelum pindah ke halaman detail
   const tombol = kartu.querySelector(".btn-cta");

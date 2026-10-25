@@ -3,15 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peta Interaktif - Peta Budaya Nusantara</title>
+  <title>Peta Interaktif - Peta Cerita Nusantara</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/peta.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-peta-cerita.svg">
 </head>
 <body>
   <nav class="navbar">
-    <div class="logo">🏛️ PBN</div>
+    <a href="index.html" class="logo" aria-label="Peta Cerita Nusantara, beranda">
+      <img src="assets/logo-peta-cerita.svg" alt="" width="44" height="44">
+      <span class="logo-lockup"><span class="logo-name">Peta Cerita</span><span class="logo-kicker">Nusantara</span></span>
+    </a>
     <div class="nav-links">
       <a href="index.html">Beranda</a>
       <a href="peta.html" class="aktif">Peta</a>
@@ -30,23 +34,32 @@
       </header>
 
       <div class="kontrol">
-        <div class="tab-pulau" id="tab-pulau">
-          <button class="tab aktif" data-pulau="semua">Semua</button>
-          <button class="tab" data-pulau="sumatra">Sumatra</button>
-          <button class="tab" data-pulau="jawa">Jawa</button>
-          <button class="tab" data-pulau="kalimantan">Kalimantan</button>
-          <button class="tab" data-pulau="sulawesi">Sulawesi</button>
-          <button class="tab" data-pulau="nusa-tenggara">Bali-Nusa Tenggara</button>
-          <button class="tab" data-pulau="maluku">Maluku</button>
-          <button class="tab" data-pulau="papua">Papua</button>
+        <div class="tab-pulau" id="tab-pulau" role="group" aria-label="Pilih wilayah peta">
+          <button type="button" class="tab aktif" aria-pressed="true" data-pulau="semua">Semua</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="sumatra">Sumatra</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="jawa">Jawa</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="kalimantan">Kalimantan</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="sulawesi">Sulawesi</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="nusa-tenggara">Bali-Nusa Tenggara</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="maluku">Maluku</button>
+          <button type="button" class="tab" aria-pressed="false" data-pulau="papua">Papua</button>
         </div>
         <input type="search" id="cari" class="cari" placeholder="Cari cerita atau daerah..." aria-label="Cari konten di peta">
       </div>
 
       <div class="chip-kategori" id="chip-kategori" aria-label="Filter kategori"></div>
 
+      <div class="status-peta" aria-live="polite" aria-atomic="true">
+        <span class="status-peta-titik" aria-hidden="true"></span>
+        <span id="status-peta">Menyiapkan lokasi budaya…</span>
+        <span class="tingkat-zoom" aria-label="Tingkat perbesaran">
+          <span>Perbesaran</span>
+          <strong id="zoom-level">100%</strong>
+        </span>
+      </div>
+
       <div class="peta-tata">
-        <div class="panggung" id="panggung">
+        <div class="panggung" id="panggung" role="region" aria-label="Peta interaktif budaya Indonesia" tabindex="0">
           <div class="kamera" id="kamera">
             <div class="peta-svg" id="peta-svg"></div>
             <div id="marker-container"></div>
@@ -66,7 +79,7 @@
             </button>
           </div>
 
-          <p class="petunjuk-peta" id="petunjuk">Scroll untuk zoom · seret untuk menggeser · klik pulau untuk fokus</p>
+          <p class="petunjuk-peta" id="petunjuk">Scroll untuk zoom · seret untuk menggeser · klik pulau atau angka kelompok untuk memperbesar</p>
           <p class="info-kosong" id="info-kosong" hidden>Belum ada konten yang cocok dengan filter ini.</p>
         </div>
 
@@ -84,7 +97,7 @@
   </main>
 
   <footer class="footer">
-    &copy; 2026 Peta Budaya Nusantara. Dibuat untuk International Digital Coding Competition.
+    &copy; 2026 Peta Cerita Nusantara. Dibuat untuk International Digital Coding Competition.
   </footer>
 
   <div class="semar-widget" id="semar-widget">

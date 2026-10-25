@@ -14,6 +14,8 @@ const panelJudul = document.getElementById("panel-judul");
 const panelIsi = document.getElementById("panel-isi");
 const infoProgres = document.getElementById("peta-progres");
 const progresIsi = document.getElementById("progres-isi");
+const statusPeta = document.getElementById("status-peta");
+const infoZoom = document.getElementById("zoom-level");
 const daftarTab = document.querySelectorAll(".tab");
 
 // ===================== Data & status =====================
@@ -27,7 +29,7 @@ const namaPulau = {};
 daftarTab.forEach(function (t) { namaPulau[t.dataset.pulau] = t.textContent.trim(); });
 
 // Hanya konten yang punya koordinat yang tampil di peta (wayang, keris, tombak ada di galeri)
-const semuaItem = dataBudaya.filter(function (d) { return d.koordinat; });
+const semuaItem = dataLengkap.filter(function (d) { return d.koordinat; });
 
 let pulauAktif = "semua";
 let kataKunci = "";
@@ -39,6 +41,8 @@ let svgSiap = false;
 // Keadaan kamera: z = skala, (px, py) = posisi pojok kiri atas peta di dalam panggung
 let lebar = 0, tinggi = 0, pw = 0, ph = 0;
 let z = 1, px = 0, py = 0;
+let zoomMarkerSaatRender = 1;
+let pewaktuRenderPin = null;
 
 // ===================== Pin SVG (digambar sendiri) =====================
 const bentukPin = '<path class="pin-bentuk" d="M18 1C8.6 1 1 8.5 1 17.8 1 30 18 45 18 45S35 30 35 17.8C35 8.5 27.4 1 18 1Z"/>';
@@ -70,7 +74,10 @@ function buatPinSvg(kategori) {
 // ===================== Penyimpanan status baca =====================
 function ambilDaftarDibaca() {
   try {
-    return JSON.parse(localStorage.getItem("pbn_dibaca")) || [];
+    const data = JSON.parse(localStorage.getItem("pbn_dibaca"));
+    return Array.isArray(data)
+      ? data.filter(function (id) { return typeof id === "string"; })
+      : [];
   } catch (e) {
     return [];
   }
@@ -108,6 +115,12 @@ function jepit() {
 function terapkan() {
   kamera.style.transform = "translate(" + px + "px," + py + "px) scale(" + z + ")";
   kamera.style.setProperty("--zoom", z);
+  infoZoom.textContent = Math.round(z * 100) + "%";
+
+  if (hasilSaatIni.length && Math.abs(z - zoomMarkerSaatRender) > 0.08) {
+    clearTimeout(pewaktuRenderPin);
+    pewaktuRenderPin = setTimeout(renderPin, 110);
+  }
 }
 
 let pewaktuTerbang = null;
@@ -152,6 +165,18 @@ function terbangKeTitik(item, zTarget, animasi) {
   const wx = item.koordinat.x / 100 * pw;
   const wy = item.koordinat.y / 100 * ph;
   aturKamera(zTarget, lebar / 2 - wx * zTarget, tinggi / 2 - wy * zTarget, animasi !== false);
+}
+
+function fokusKelompok(items) {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  items.forEach(function (item) {
+    const x = item.koordinat.x / 100 * LEBAR_SVG;
+    const y = item.koordinat.y / 100 * TINGGI_SVG;
+    minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+    minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+  });
+  const ruang = 30;
+  terbangKeKotak(minX - ruang, minY - ruang, Math.max(maxX - minX, 24) + ruang * 2, Math.max(maxY - minY, 24) + ruang * 2, true, 6.5);
 }
 
 function terbangKeHasil(hasil) {
@@ -205,6 +230,7 @@ function sorotPulau() {
   document.querySelectorAll(".pulau").forEach(function (g) {
     g.classList.toggle("redup", pulauAktif !== "semua" && g.id !== pulauAktif);
     g.classList.toggle("fokus", pulauAktif !== "semua" && g.id === pulauAktif);
+    g.setAttribute("aria-pressed", g.id === pulauAktif ? "true" : "false");
   });
 }
 
@@ -245,43 +271,100 @@ function buatElemen(tag, kelas, teks) {
   return e;
 }
 
-function renderMarker() {
+function kelompokkanPin(items) {
+  const kelompok = [];
+  const jarakMaks = 42 / z;
+
+  items.forEach(function (item) {
+    const titik = {
+      x: item.koordinat.x / 100 * pw,
+      y: item.koordinat.y / 100 * ph
+    };
+    let terdekat = null;
+    let jarakTerdekat = jarakMaks;
+
+    kelompok.forEach(function (grup) {
+      if (grup.items.length === 1 && itemTerpilih && grup.items[0].id === itemTerpilih.id) return;
+      const jarak = Math.hypot(titik.x - grup.x, titik.y - grup.y);
+      if (jarak < jarakTerdekat) {
+        terdekat = grup;
+        jarakTerdekat = jarak;
+      }
+    });
+
+    if (!terdekat) {
+      kelompok.push({ items: [item], x: titik.x, y: titik.y });
+      return;
+    }
+
+    terdekat.items.push(item);
+    terdekat.x += (titik.x - terdekat.x) / terdekat.items.length;
+    terdekat.y += (titik.y - terdekat.y) / terdekat.items.length;
+  });
+
+  return kelompok;
+}
+
+function renderPin() {
   const dibaca = ambilDaftarDibaca();
+  wadahMarker.innerHTML = "";
+
+  kelompokkanPin(hasilSaatIni).forEach(function (grup) {
+    const item = grup.items[0];
+    const berkelompok = grup.items.length > 1;
+    const pin = document.createElement("button");
+    pin.type = "button";
+    pin.className = berkelompok
+      ? "marker marker-klaster"
+      : "marker marker-" + item.kategori + (dibaca.includes(item.id) ? " dibaca" : "");
+    if (!berkelompok) pin.dataset.id = item.id;
+    pin.style.left = (grup.x / pw * 100) + "%";
+    pin.style.top = (grup.y / ph * 100) + "%";
+
+    if (berkelompok) {
+      pin.textContent = grup.items.length;
+      pin.setAttribute("aria-label", grup.items.length + " lokasi berdekatan. Tekan untuk memperbesar peta.");
+      pin.title = grup.items.length + " lokasi · tekan untuk memperbesar";
+      pin.appendChild(buatElemen("span", "marker-nama", grup.items.length + " lokasi · perbesar untuk melihat"));
+      pin.addEventListener("click", function () {
+        bunyiKlik();
+        fokusKelompok(grup.items);
+      });
+    } else {
+      pin.innerHTML = buatPinSvg(item.kategori);
+      pin.setAttribute("aria-label", item.judul + ", " + item.daerah);
+      pin.appendChild(buatElemen("span", "marker-nama", item.judul));
+      pin.addEventListener("mouseenter", function () { bunyiHover(); });
+      pin.addEventListener("click", function () {
+        bunyiKlik();
+        pilihItem(item);
+      });
+    }
+
+    wadahMarker.appendChild(pin);
+  });
+
+  zoomMarkerSaatRender = z;
+  infoKosong.hidden = hasilSaatIni.length > 0;
+  perbaruiPin();
+}
+
+function renderMarker() {
   hasilSaatIni = hitungHasil();
 
   if (itemTerpilih && !hasilSaatIni.some(function (d) { return d.id === itemTerpilih.id; })) {
     itemTerpilih = null;
   }
 
-  wadahMarker.innerHTML = "";
-
-  hasilSaatIni.forEach(function (item) {
-    const pin = document.createElement("button");
-    pin.type = "button";
-    pin.className = "marker marker-" + item.kategori + (dibaca.includes(item.id) ? " dibaca" : "");
-    pin.dataset.id = item.id;
-    pin.innerHTML = buatPinSvg(item.kategori);
-    pin.style.left = item.koordinat.x + "%";
-    pin.style.top = item.koordinat.y + "%";
-    pin.setAttribute("aria-label", item.judul + ", " + item.daerah);
-
-    pin.appendChild(buatElemen("span", "marker-nama", item.judul));
-
-    pin.addEventListener("mouseenter", function () { bunyiHover(); });
-    pin.addEventListener("click", function () {
-      bunyiKlik();
-      pilihItem(item);
-    });
-
-    wadahMarker.appendChild(pin);
-  });
-
-  infoKosong.hidden = hasilSaatIni.length > 0;
-  perbaruiPin();
+  renderPin();
   perbaruiChip();
-  perbaruiProgres(dibaca);
+  perbaruiProgres(ambilDaftarDibaca());
   sorotPulau();
   isiPanel();
+
+  const wilayah = pulauAktif === "semua" ? "semua wilayah" : namaPulau[pulauAktif];
+  const pencarian = kataKunci ? " · hasil untuk “" + inputCari.value.trim() + "”" : "";
+  statusPeta.textContent = hasilSaatIni.length + " lokasi ditampilkan · " + wilayah + pencarian;
 }
 
 // ===================== Panel samping =====================
@@ -336,7 +419,7 @@ function tampilkanDetail(item, dibaca) {
   kembali.type = "button";
   kembali.addEventListener("click", function () {
     itemTerpilih = null;
-    perbaruiPin();
+    renderPin();
     isiPanel();
     fokusKamera(true);
   });
@@ -367,7 +450,7 @@ function pilihPulau(id, terbang) {
   daftarTab.forEach(function (t) {
     const aktif = t.dataset.pulau === id;
     t.classList.toggle("aktif", aktif);
-    t.setAttribute("aria-selected", aktif);
+    t.setAttribute("aria-pressed", aktif);
   });
   renderMarker();
   if (terbang !== false) fokusKamera(true);
@@ -428,7 +511,7 @@ let sudahGeser = false;
 let targetAwal = null;
 
 if (window.matchMedia("(pointer: coarse)").matches) {
-  petunjuk.textContent = "Cubit untuk zoom · seret untuk menggeser · ketuk pulau untuk fokus";
+  petunjuk.textContent = "Cubit untuk zoom · seret untuk menggeser · ketuk pulau atau angka kelompok";
 }
 
 function sembunyikanPetunjuk() {
@@ -568,7 +651,7 @@ document.addEventListener("keydown", function (e) {
   if (e.key === "Escape") {
     if (itemTerpilih) {
       itemTerpilih = null;
-      perbaruiPin();
+      renderPin();
       isiPanel();
       fokusKamera(true);
     } else if (pulauAktif !== "semua" || z > 1) {
@@ -589,6 +672,7 @@ fetch("assets/peta-indonesia.svg")
   .then(function (svg) {
     wadahSvg.innerHTML = svg;
     svgSiap = true;
+    siapkanPulauUntukKeyboard();
     sorotPulau();
     fokusKamera(false);
   })
@@ -606,8 +690,24 @@ window.addEventListener("resize", function () {
     ukur();
     if (svgSiap) fokusKamera(false);
     else { lihatSemua(false); }
+    renderPin();
   }, 150);
 });
+
+function siapkanPulauUntukKeyboard() {
+  wadahSvg.querySelectorAll(".pulau").forEach(function (grup) {
+    const nama = namaPulau[grup.id] || grup.getAttribute("data-pulau") || grup.id;
+    const jumlah = semuaItem.filter(function (item) { return item.pulau === grup.id; }).length;
+    grup.setAttribute("tabindex", "0");
+    grup.setAttribute("role", "button");
+    grup.setAttribute("aria-label", nama + ", " + jumlah + " lokasi budaya. Tekan Enter atau Spasi untuk fokus.");
+    grup.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      pilihPulau(pulauAktif === grup.id ? "semua" : grup.id);
+    });
+  });
+}
 
 // ===================== Mulai =====================
 ukur();
@@ -619,6 +719,7 @@ function ukurUlangSetelahMuat() {
   ukur();
   fokusKamera(false);
   if (!svgSiap) lihatSemua(false);
+  renderPin();
 }
 
 window.addEventListener("load", ukurUlangSetelahMuat);

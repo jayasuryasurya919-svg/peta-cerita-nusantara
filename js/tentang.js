@@ -11,7 +11,7 @@ const namaKategori = {
 const wadahStatistik = document.getElementById("statistik");
 
 Object.keys(namaKategori).forEach(function (kunci) {
-  const jumlah = dataBudaya.filter(function (item) {
+  const jumlah = dataLengkap.filter(function (item) {
     return item.kategori === kunci;
   }).length;
 

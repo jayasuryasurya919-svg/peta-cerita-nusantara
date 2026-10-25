@@ -1,4 +1,4 @@
-const dataBudaya = [
+let dataBudaya = [
   // ===== CERITA RAKYAT =====
   {
     id: "malin-kundang",
@@ -845,3 +845,965 @@ const dataBudaya = [
     ]
   }
 ];
+
+// =====================================================================
+// Pelengkapan, perbaikan, dan penggabungan data budaya.
+// Semua skrip halaman memuat berkas ini sebelum skrip fiturnya:
+//   console.log(validasi(dataLengkap));
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// 3. PERBAIKAN DATA YANG SUDAH ADA
+// ---------------------------------------------------------------------
+const perbaikan = {
+  // Tumang adalah ayah Sangkuriang (suami Dayang Sumbi), bukan ayah Dayang Sumbi.
+  "sangkuriang": (d) => {
+    d.kuis[0].pertanyaan = "Siapa nama anjing yang ternyata adalah ayah Sangkuriang?";
+    d.isi[0] = "Dayang Sumbi adalah seorang putri yang tanpa sengaja mengucap janji akan menikahi siapa pun yang mengambilkan alat tenunnya yang terjatuh. Yang mengambilkannya adalah seekor anjing bernama Tumang, yang ternyata adalah dewa yang dikutuk menjadi anjing. Dari pernikahan itu lahirlah Sangkuriang.";
+  },
+  // Dalam Ramayana, Satrughna kembar dengan Laksmana (keduanya putra Dewi Sumitra), bukan dengan Bharata.
+  "satrughna": (d) => {
+    d.sinopsis = "Adik kembar Laksmana, putra Dewi Sumitra dan Prabu Dasarata yang setia menjaga kerajaan.";
+  }
+};
+
+// ---------------------------------------------------------------------
+// 1. ISI + KUIS UNTUK ENTRI YANG MASIH KOSONG (wayang)
+// ---------------------------------------------------------------------
+const lengkapan = {
+  "togog": {
+    isi: [
+      "Togog adalah Punakawan yang mengabdi pada pihak raksasa dan para penguasa angkara. Dalam pewayangan Jawa ia dipercaya sebagai kakak Semar.",
+      "Meski melayani pihak raksasa, Togog selalu menasihati majikannya agar berbuat baik. Sayangnya, nasihat itu jarang dituruti.",
+      "Tokoh ini sering dimaknai sebagai pengingat bahwa kebaikan tetap perlu disuarakan, walaupun belum tentu didengar."
+    ],
+    kuis: [
+      { pertanyaan: "Togog mengabdi pada pihak mana?", pilihan: ["Para ksatria Pandawa", "Pihak raksasa", "Para dewa", "Pasukan wanara"], benar: 1 },
+      { pertanyaan: "Bagaimana nasib nasihat Togog kepada majikannya?", pilihan: ["Selalu dituruti", "Jarang didengar", "Dijadikan hukum kerajaan", "Dibukukan"], benar: 1 }
+    ]
+  },
+  "bilung": {
+    isi: [
+      "Bilung, juga disebut Sarawita, adalah Punakawan pendamping Togog yang mengabdi pada pihak raksasa.",
+      "Ia dikenal jenaka dan kerap melengkapi Togog dalam adegan dagelan.",
+      "Bersama Togog, Bilung menjadi gambaran abdi yang tetap setia meski majikannya sering tersesat."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa pendamping Bilung dalam Punakawan sisi raksasa?", pilihan: ["Semar", "Togog", "Petruk", "Gareng"], benar: 1 },
+      { pertanyaan: "Bilung dikenal dengan sifat apa?", pilihan: ["Jenaka", "Kejam", "Pendiam", "Serakah"], benar: 0 }
+    ]
+  },
+  "laksmana": {
+    isi: [
+      "Laksmana adalah adik Sri Rama, putra Dewi Sumitra dan Prabu Dasarata. Ia memilih ikut Rama menjalani pengasingan di hutan.",
+      "Selama di hutan, Laksmana menjaga Rama dan Dewi Shinta. Dialah yang memotong hidung Sarpakenaka, sehingga kemarahan Alengka terpicu.",
+      "Dalam banyak versi kisah, Laksmana juga yang mengalahkan Indrajit dalam perang. Ia menjadi teladan kesetiaan seorang adik."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa ibu kandung Laksmana?", pilihan: ["Dewi Kausalya", "Dewi Kekayi", "Dewi Sumitra", "Dewi Shinta"], benar: 2 },
+      { pertanyaan: "Apa yang dilakukan Laksmana saat Rama diasingkan?", pilihan: ["Memerintah Ayodhya", "Ikut mendampingi Rama di hutan", "Bergabung dengan Rahwana", "Menjadi raja wanara"], benar: 1 }
+    ]
+  },
+  "prabu-dasarata": {
+    isi: [
+      "Prabu Dasarata adalah raja Ayodhya yang memiliki tiga permaisuri: Dewi Kausalya, Dewi Kekayi, dan Dewi Sumitra.",
+      "Dari ketiganya lahir empat putra: Rama, Bharata, Laksmana, dan Satrughna.",
+      "Karena janjinya kepada Dewi Kekayi, Dasarata terpaksa melepas Rama ke pengasingan. Kesedihan itu dikisahkan membuatnya wafat tak lama kemudian."
+    ],
+    kuis: [
+      { pertanyaan: "Prabu Dasarata adalah raja dari kerajaan mana?", pilihan: ["Alengka", "Ayodhya", "Mantili", "Kiskenda"], benar: 1 },
+      { pertanyaan: "Berapa jumlah putra Prabu Dasarata dalam kisah ini?", pilihan: ["Dua", "Tiga", "Empat", "Lima"], benar: 2 }
+    ]
+  },
+  "bharata": {
+    isi: [
+      "Bharata adalah putra Prabu Dasarata dan Dewi Kekayi. Ibunya meminta agar ia yang naik takhta, bukan Rama.",
+      "Bharata menolak permintaan itu. Ia menyusul Rama ke hutan dan memohon agar kakaknya pulang.",
+      "Ketika Rama tetap menjalani pengasingan, Bharata memerintah Ayodhya sebagai wakil Rama. Ia menjadi lambang kesetiaan dan ketulusan."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa ibu kandung Bharata?", pilihan: ["Dewi Kausalya", "Dewi Sumitra", "Dewi Kekayi", "Dewi Anjani"], benar: 2 },
+      { pertanyaan: "Bagaimana sikap Bharata terhadap takhta Ayodhya?", pilihan: ["Merebutnya dari Rama", "Menolaknya dan memerintah sebagai wakil Rama", "Menyerahkannya kepada Rahwana", "Meninggalkannya begitu saja"], benar: 1 }
+    ]
+  },
+  "satrughna": {
+    isi: [
+      "Satrughna adalah putra bungsu Prabu Dasarata, kembar dengan Laksmana, dan putra Dewi Sumitra.",
+      "Ia mendampingi Bharata dalam menjaga Ayodhya selama Rama diasingkan.",
+      "Satrughna mewakili kesetiaan yang bekerja diam-diam dalam menjaga kerajaan."
+    ],
+    kuis: [
+      { pertanyaan: "Satrughna kembar dengan siapa?", pilihan: ["Rama", "Bharata", "Laksmana", "Wibisana"], benar: 2 },
+      { pertanyaan: "Siapa yang didampingi Satrughna menjaga Ayodhya?", pilihan: ["Bharata", "Rahwana", "Sugriwa", "Kumbakarna"], benar: 0 }
+    ]
+  },
+  "dewi-kausalya": {
+    isi: [
+      "Dewi Kausalya adalah permaisuri utama Prabu Dasarata dan ibu kandung Sri Rama.",
+      "Ketika Rama diasingkan, ia melepas putranya dengan hati berat namun tabah.",
+      "Kausalya menjadi gambaran kesabaran seorang ibu yang menerima takdir demi kewajiban."
+    ],
+    kuis: [
+      { pertanyaan: "Dewi Kausalya adalah ibu dari siapa?", pilihan: ["Rama", "Bharata", "Laksmana", "Satrughna"], benar: 0 },
+      { pertanyaan: "Bagaimana sikap Kausalya saat Rama diasingkan?", pilihan: ["Memberontak", "Melepas dengan hati berat namun tabah", "Ikut menyerang Kekayi", "Pergi ke Alengka"], benar: 1 }
+    ]
+  },
+  "dewi-kekayi": {
+    isi: [
+      "Dewi Kekayi adalah salah satu istri Prabu Dasarata dan ibu Bharata.",
+      "Ia pernah mendapat janji dua permintaan dari Dasarata. Atas dorongan dayangnya, ia memakainya untuk meminta Rama diasingkan dan Bharata dinobatkan.",
+      "Permintaan itu menjadi pemicu rangkaian peristiwa dalam Ramayana, dan Bharata sendiri menolak hasilnya."
+    ],
+    kuis: [
+      { pertanyaan: "Apa yang diminta Dewi Kekayi kepada Dasarata?", pilihan: ["Rama diasingkan dan Bharata dinobatkan", "Rama dinobatkan lebih cepat", "Perang melawan Alengka", "Pembangunan candi"], benar: 0 },
+      { pertanyaan: "Dewi Kekayi adalah ibu dari siapa?", pilihan: ["Rama", "Laksmana", "Bharata", "Anoman"], benar: 2 }
+    ]
+  },
+  "dewi-sumitra": {
+    isi: [
+      "Dewi Sumitra adalah istri Prabu Dasarata, ibu dari Laksmana dan Satrughna.",
+      "Ia merelakan Laksmana ikut mendampingi Rama ke hutan, dengan pesan agar melayani Rama dan Shinta dengan tulus.",
+      "Sumitra dikenang sebagai ibu yang mendahulukan pengabdian dan kebenaran."
+    ],
+    kuis: [
+      { pertanyaan: "Dewi Sumitra adalah ibu dari siapa saja?", pilihan: ["Rama dan Bharata", "Laksmana dan Satrughna", "Bharata dan Satrughna", "Rama dan Laksmana"], benar: 1 },
+      { pertanyaan: "Apa yang dilakukan Sumitra saat Laksmana hendak ikut Rama?", pilihan: ["Melarangnya", "Merelakan dan berpesan agar melayani dengan tulus", "Menyuruhnya menjadi raja", "Menyembunyikannya"], benar: 1 }
+    ]
+  },
+  "prabu-janaka": {
+    isi: [
+      "Prabu Janaka adalah raja Mantili. Ia menemukan seorang bayi perempuan dari dalam bumi saat membajak sawah, lalu mengasuhnya sebagai putri, yaitu Dewi Shinta.",
+      "Ketika Shinta dewasa, Janaka mengadakan sayembara dengan busur sakti sebagai ujiannya.",
+      "Rama berhasil memenangkan sayembara itu dan menikah dengan Shinta."
+    ],
+    kuis: [
+      { pertanyaan: "Prabu Janaka adalah raja dari kerajaan mana?", pilihan: ["Mantili", "Ayodhya", "Alengka", "Kiskenda"], benar: 0 },
+      { pertanyaan: "Dari mana Janaka menemukan Dewi Shinta?", pilihan: ["Dari buih sungai", "Dari dalam bumi saat membajak sawah", "Dari batang bambu", "Dari telur"], benar: 1 }
+    ]
+  },
+  "sarpakenaka": {
+    isi: [
+      "Sarpakenaka adalah adik perempuan Rahwana. Ia jatuh hati pada Rama dan Laksmana saat bertemu mereka di hutan.",
+      "Cintanya ditolak, lalu ia menyerang Dewi Shinta. Laksmana pun memotong hidungnya.",
+      "Dengan hati terhina, Sarpakenaka mengadu kepada Rahwana dan memicu serangkaian pembalasan yang berujung penculikan Shinta."
+    ],
+    kuis: [
+      { pertanyaan: "Apa hubungan Sarpakenaka dengan Rahwana?", pilihan: ["Istri", "Adik perempuan", "Ibu", "Putri"], benar: 1 },
+      { pertanyaan: "Apa yang dilakukan Laksmana pada Sarpakenaka?", pilihan: ["Memotong hidungnya", "Mengusirnya ke laut", "Mengangkatnya sebagai ratu", "Menikahinya"], benar: 0 }
+    ]
+  },
+  "indrajit": {
+    isi: [
+      "Indrajit, juga disebut Megananda, adalah putra Rahwana yang sangat sakti dan mampu menghilang di medan perang.",
+      "Dalam pertempuran, ia memakai senjata saktinya untuk mengikat Rama dan Laksmana, sehingga pasukan Rama sempat terdesak.",
+      "Dalam banyak versi kisah, Indrajit akhirnya gugur oleh Laksmana."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa ayah Indrajit?", pilihan: ["Kumbakarna", "Rahwana", "Wibisana", "Sugriwa"], benar: 1 },
+      { pertanyaan: "Kemampuan khas Indrajit di medan perang adalah?", pilihan: ["Menghilang", "Terbang tanpa sayap", "Mengendalikan hujan", "Berubah menjadi batu"], benar: 0 }
+    ]
+  },
+  "subali": {
+    isi: [
+      "Subali adalah kakak Sugriwa dan raja wanara di Gua Kiskenda.",
+      "Perselisihan kakak-beradik ini bermula dari kesalahpahaman saat Subali bertarung melawan raksasa di dalam gua.",
+      "Sugriwa kemudian meminta bantuan Rama. Subali gugur terkena panah Rama, dan Sugriwa naik takhta sebagai raja wanara."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa adik Subali?", pilihan: ["Anoman", "Sugriwa", "Jambawan", "Nala"], benar: 1 },
+      { pertanyaan: "Apa pemicu perselisihan Subali dan Sugriwa?", pilihan: ["Perebutan Shinta", "Kesalahpahaman saat pertarungan di gua", "Pembagian harta", "Perbedaan agama"], benar: 1 }
+    ]
+  },
+  "anggada": {
+    isi: [
+      "Anggada adalah putra Subali dan pangeran wanara dalam pasukan Sugriwa.",
+      "Dalam lakon \"Anggada Duta\", ia diutus Rama menghadap Rahwana untuk menawarkan jalan damai. Rahwana menolak tawaran itu.",
+      "Anggada mewakili generasi muda yang berani dan setia, meski ayahnya gugur oleh pihak yang kini ia bela."
+    ],
+    kuis: [
+      { pertanyaan: "Anggada adalah putra siapa?", pilihan: ["Sugriwa", "Subali", "Anoman", "Rahwana"], benar: 1 },
+      { pertanyaan: "Apa tugas Anggada dalam lakon \"Anggada Duta\"?", pilihan: ["Menjadi utusan Rama kepada Rahwana", "Membangun jembatan", "Menjaga Shinta", "Memimpin pasukan raksasa"], benar: 0 }
+    ]
+  },
+  "peksi-jatayu": {
+    isi: [
+      "Jatayu adalah burung raksasa sakti yang dalam banyak versi dianggap sahabat lama Prabu Dasarata.",
+      "Saat melihat Rahwana membawa lari Dewi Shinta, Jatayu menyerangnya meski tahu kalah kuat. Sayapnya dilukai dan ia jatuh.",
+      "Sebelum wafat, Jatayu sempat memberi tahu Rama ke mana Shinta dibawa. Ia dikenang sebagai pahlawan yang berkorban."
+    ],
+    kuis: [
+      { pertanyaan: "Apa yang dilakukan Jatayu saat Shinta diculik?", pilihan: ["Melarikan diri", "Menyerang Rahwana untuk menyelamatkan Shinta", "Membantu Rahwana", "Bersembunyi di hutan"], benar: 1 },
+      { pertanyaan: "Informasi apa yang disampaikan Jatayu kepada Rama?", pilihan: ["Arah Shinta dibawa pergi", "Letak harta karun", "Rahasia kelemahan Rahwana", "Lokasi gua Kiskenda"], benar: 0 }
+    ]
+  },
+  "peksi-sempati": {
+    isi: [
+      "Sempati adalah kakak Jatayu, burung sakti yang sayapnya terbakar saat terbang terlalu dekat matahari.",
+      "Dari kejauhan ia dapat melihat jauh, dan memberi tahu pasukan wanara bahwa Shinta ditahan di Alengka.",
+      "Keterangan Sempati menjadi petunjuk penting bagi Anoman dan pasukannya untuk menyeberangi lautan."
+    ],
+    kuis: [
+      { pertanyaan: "Apa hubungan Sempati dengan Jatayu?", pilihan: ["Kakak", "Anak", "Musuh", "Gurunya"], benar: 0 },
+      { pertanyaan: "Informasi apa yang diberikan Sempati kepada pasukan wanara?", pilihan: ["Shinta ditahan di Alengka", "Rama berada di Ayodhya", "Rahwana menyerah", "Jembatan sudah rusak"], benar: 0 }
+    ]
+  },
+  "batara-narada": {
+    isi: [
+      "Batara Narada adalah dewa yang dalam banyak lakon menjadi kepercayaan sekaligus juru bicara Batara Guru.",
+      "Ia sering turun ke dunia menyampaikan pesan para dewa atau menengahi perselisihan.",
+      "Dengan penampilan yang jenaka namun bijak, Narada menjadi jembatan antara kahyangan dan dunia manusia."
+    ],
+    kuis: [
+      { pertanyaan: "Apa peran Batara Narada dalam kisah pewayangan?", pilihan: ["Penyampai pesan dan penengah para dewa", "Raja raksasa", "Pembuat keris", "Panglima wanara"], benar: 0 },
+      { pertanyaan: "Narada mendampingi dewa siapa?", pilihan: ["Batara Guru", "Batara Surya", "Batara Bayu", "Batara Yamadipati"], benar: 0 }
+    ]
+  },
+  "batara-bayu": {
+    isi: [
+      "Batara Bayu adalah dewa angin dalam jajaran dewa pewayangan.",
+      "Dalam kisah Ramayana ia dipercaya sebagai ayah Anoman, yang mewarisi kekuatan dan kemampuan terbang.",
+      "Dalam kisah Mahabharata, Bayu juga dikaitkan dengan Bima atau Werkudara."
+    ],
+    kuis: [
+      { pertanyaan: "Batara Bayu adalah dewa apa?", pilihan: ["Dewa angin", "Dewa api", "Dewa laut", "Dewa bumi"], benar: 0 },
+      { pertanyaan: "Siapa putra Batara Bayu dalam Ramayana?", pilihan: ["Anoman", "Rama", "Laksmana", "Wibisana"], benar: 0 }
+    ]
+  },
+  "dewi-anjani": {
+    isi: [
+      "Dewi Anjani dikisahkan sebagai bidadari yang dikutuk menjadi berwujud kera.",
+      "Menurut kisahnya, melalui anugerah Batara Bayu ia mengandung dan melahirkan Anoman.",
+      "Anjani digambarkan sebagai ibu yang melahirkan pahlawan dari keadaan yang awalnya merupakan hukuman."
+    ],
+    kuis: [
+      { pertanyaan: "Dewi Anjani adalah ibu dari siapa?", pilihan: ["Anoman", "Sugriwa", "Rahwana", "Indrajit"], benar: 0 },
+      { pertanyaan: "Wujud apa yang dikutukkan kepada Anjani?", pilihan: ["Kera", "Burung", "Batu", "Ular"], benar: 0 }
+    ]
+  },
+  "jambawan": {
+    isi: [
+      "Jambawan adalah tokoh sepuh dalam pasukan Rama yang dikenal bijaksana dan berpengalaman.",
+      "Ia menjadi penasihat pasukan, dan dalam banyak versi mengingatkan Anoman akan kekuatannya sendiri sebelum menyeberangi lautan.",
+      "Jambawan mewakili peran orang tua yang membimbing generasi muda dengan nasihat."
+    ],
+    kuis: [
+      { pertanyaan: "Apa peran Jambawan dalam pasukan Rama?", pilihan: ["Penasihat yang bijaksana", "Panglima raksasa", "Penjaga taman Argasoka", "Pembuat jembatan"], benar: 0 },
+      { pertanyaan: "Siapa yang diingatkan Jambawan akan kekuatannya?", pilihan: ["Anoman", "Rama", "Laksmana", "Rahwana"], benar: 0 }
+    ]
+  },
+  "nala": {
+    isi: [
+      "Nala adalah wanara ahli bangunan dalam pasukan Sugriwa.",
+      "Ia memimpin pembangunan jembatan batu yang menghubungkan daratan India dengan Alengka.",
+      "Jembatan itu memungkinkan pasukan Rama menyeberangi lautan dan menjadi simbol kerja sama dan keahlian."
+    ],
+    kuis: [
+      { pertanyaan: "Apa jasa terbesar Nala dalam kisah ini?", pilihan: ["Memimpin pembangunan jembatan ke Alengka", "Membunuh Rahwana", "Menculik Shinta", "Menjaga Ayodhya"], benar: 0 },
+      { pertanyaan: "Nala berasal dari bangsa apa?", pilihan: ["Wanara", "Raksasa", "Dewa", "Resi"], benar: 0 }
+    ]
+  },
+  "kala-marica": {
+    isi: [
+      "Kala Marica adalah raksasa yang diperintah Rahwana untuk menyamar menjadi kijang emas.",
+      "Kijang itu memikat Dewi Shinta, yang meminta Rama menangkapnya. Rama pun meninggalkan Shinta bersama Laksmana.",
+      "Marica akhirnya terkena panah Rama. Suaranya meniru jeritan Rama sehingga Laksmana menyusul, dan Shinta pun tertinggal sendirian."
+    ],
+    kuis: [
+      { pertanyaan: "Menyamar menjadi apa Kala Marica?", pilihan: ["Kijang emas", "Burung garuda", "Naga", "Singa"], benar: 0 },
+      { pertanyaan: "Siapa yang memerintahkan Marica menyamar?", pilihan: ["Rahwana", "Sugriwa", "Rama", "Wibisana"], benar: 0 }
+    ]
+  },
+  "resi-wiswamitra": {
+    isi: [
+      "Resi Wiswamitra adalah pertapa sakti yang membimbing Rama dan Laksmana sejak muda.",
+      "Ia meminta bantuan mereka melindungi pertapaan dari raksasa pengganggu seperti Subahu dan Marica, lalu mengajarkan pemakaian senjata sakti.",
+      "Wiswamitra juga membawa Rama ke Mantili, tempat Rama memenangkan sayembara Dewi Shinta."
+    ],
+    kuis: [
+      { pertanyaan: "Apa peran Resi Wiswamitra bagi Rama?", pilihan: ["Guru dan pembimbing", "Musuh utama", "Raja Ayodhya", "Pembuat keris"], benar: 0 },
+      { pertanyaan: "Ke mana Wiswamitra membawa Rama dan Laksmana?", pilihan: ["Mantili", "Alengka", "Kiskenda", "Hutan Seram"], benar: 0 }
+    ]
+  },
+  "sayempraba": {
+    isi: [
+      "Sayempraba adalah bidadari penghuni gua ajaib yang ditemui pasukan wanara saat mencari Shinta.",
+      "Ia menyambut mereka dengan makanan dan membantu mereka keluar dari gua yang membingungkan.",
+      "Sayempraba mewakili pertolongan tak terduga yang datang di tengah perjalanan yang berat."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa yang ditolong oleh Sayempraba?", pilihan: ["Pasukan wanara", "Pasukan raksasa", "Dewi Shinta", "Prabu Dasarata"], benar: 0 },
+      { pertanyaan: "Di mana Sayempraba tinggal?", pilihan: ["Gua ajaib", "Istana Alengka", "Puncak Kelimutu", "Dasar laut"], benar: 0 }
+    ]
+  }
+  ,
+  "batara-surya": {
+    isi: [
+      "Batara Surya adalah dewa matahari dalam jajaran dewa pewayangan, sumber cahaya dan kehidupan bagi dunia.",
+      "Dalam kisah Ramayana, ia dikenal sebagai ayah Sugriwa, raja wanara Kiskenda yang menjadi sekutu Rama.",
+      "Surya melambangkan terang, keteraturan, dan kesetiaan menjalankan peran setiap hari."
+    ],
+    kuis: [
+      { pertanyaan: "Batara Surya adalah dewa apa?", pilihan: ["Dewa matahari", "Dewa angin", "Dewa laut", "Dewa kematian"], benar: 0 },
+      { pertanyaan: "Siapa putra Batara Surya dalam Ramayana?", pilihan: ["Sugriwa", "Rahwana", "Laksmana", "Wibisana"], benar: 0 }
+    ]
+  },
+  "batara-indra": {
+    isi: [
+      "Batara Indra adalah dewa penguasa langit dan hujan, yang dalam banyak kisah dipandang sebagai raja kahyangan.",
+      "Dalam Ramayana, Indra dikenal sebagai ayah Subali, kakak Sugriwa. Nama Indra juga melekat pada Indrajit, putra Rahwana, yang namanya berarti penakluk Indra.",
+      "Indra mewakili kekuasaan atas langit dan kesuburan yang dibawa hujan."
+    ],
+    kuis: [
+      { pertanyaan: "Batara Indra menguasai apa?", pilihan: ["Langit dan hujan", "Samudra", "Api", "Bumi"], benar: 0 },
+      { pertanyaan: "Siapa putra Indra dalam Ramayana?", pilihan: ["Subali", "Anoman", "Rama", "Bharata"], benar: 0 }
+    ]
+  },
+  "batara-brahma": {
+    isi: [
+      "Batara Brahma adalah dewa pencipta dalam jajaran dewa pewayangan.",
+      "Dalam Ramayana, Brahma dikenal sebagai dewa yang menganugerahkan kesaktian kepada Rahwana atas pertapaannya yang panjang.",
+      "Kisah ini memperlihatkan bahwa kesaktian yang diperoleh tanpa kebijaksanaan dapat berujung pada malapetaka."
+    ],
+    kuis: [
+      { pertanyaan: "Apa peran Batara Brahma?", pilihan: ["Dewa pencipta", "Dewa kematian", "Dewa angin", "Dewa matahari"], benar: 0 },
+      { pertanyaan: "Kepada siapa Brahma menganugerahkan kesaktian dalam Ramayana?", pilihan: ["Rahwana", "Rama", "Anoman", "Laksmana"], benar: 0 }
+    ]
+  },
+  "batara-yamadipati": {
+    isi: [
+      "Batara Yamadipati adalah dewa penguasa kematian dan alam akhirat dalam jajaran dewa pewayangan.",
+      "Ia bertugas menimbang perbuatan manusia setelah wafat, sehingga dipandang sebagai penjaga keadilan terakhir.",
+      "Tokoh ini mengingatkan bahwa setiap perbuatan akan dimintai pertanggungjawaban."
+    ],
+    kuis: [
+      { pertanyaan: "Batara Yamadipati menguasai apa?", pilihan: ["Kematian dan akhirat", "Hujan", "Kesuburan", "Perang"], benar: 0 },
+      { pertanyaan: "Apa pesan moral dari tokoh Yamadipati?", pilihan: ["Setiap perbuatan akan dipertanggungjawabkan", "Kekayaan menentukan segalanya", "Kekuatan fisik utama", "Hidup tanpa aturan"], benar: 0 }
+    ]
+  },
+  "resi-gotama": {
+    isi: [
+      "Dalam pewayangan Jawa, Resi Gotama dikenal sebagai ayah Dewi Anjani, Subali, dan Sugriwa.",
+      "Kisah keluarganya diwarnai perselisihan karena sebuah pusaka yang diperebutkan anak-anaknya, yang berujung pada kutukan.",
+      "Dari rangkaian peristiwa itulah dipercaya lahir asal-usul Anoman, sehingga Gotama berada di awal silsilah para wanara."
+    ],
+    kuis: [
+      { pertanyaan: "Resi Gotama adalah ayah dari siapa?", pilihan: ["Dewi Anjani, Subali, dan Sugriwa", "Rama dan Laksmana", "Rahwana dan Kumbakarna", "Bharata dan Satrughna"], benar: 0 },
+      { pertanyaan: "Tokoh terkenal yang asal-usulnya terkait kisah Gotama?", pilihan: ["Anoman", "Semar", "Buto Cakil", "Wibisana"], benar: 0 }
+    ]
+  },
+  "resi-agastya": {
+    isi: [
+      "Resi Agastya adalah pertapa bijaksana yang dihormati oleh Rama dalam masa pengasingannya.",
+      "Ia memberikan nasihat dan senjata sakti kepada Rama untuk menghadapi Rahwana.",
+      "Agastya menjadi teladan guru spiritual yang membekali, bukan menggantikan, perjuangan seseorang."
+    ],
+    kuis: [
+      { pertanyaan: "Apa yang diberikan Resi Agastya kepada Rama?", pilihan: ["Nasihat dan senjata sakti", "Mahkota Alengka", "Seekor kuda", "Sebuah kapal"], benar: 0 },
+      { pertanyaan: "Apa peran Agastya bagi Rama?", pilihan: ["Pembimbing bijaksana", "Musuh", "Raja Mantili", "Panglima raksasa"], benar: 0 }
+    ]
+  },
+  "patih-prahasta": {
+    isi: [
+      "Patih Prahasta adalah patih dan panglima kerajaan Alengka di bawah Rahwana.",
+      "Ia memimpin pasukan raksasa menghadapi serbuan wanara. Dalam banyak versi ia gugur di tangan Nila.",
+      "Prahasta menggambarkan pejabat setia yang tetap membela rajanya meski perang berpihak pada pihak lawan."
+    ],
+    kuis: [
+      { pertanyaan: "Apa jabatan Prahasta di Alengka?", pilihan: ["Patih dan panglima", "Pendeta", "Juru masak", "Penjaga taman"], benar: 0 },
+      { pertanyaan: "Prahasta gugur saat menghadapi pasukan apa?", pilihan: ["Wanara", "Dewa", "Ayodhya", "Mantili"], benar: 0 }
+    ]
+  },
+  "trisirah": {
+    isi: [
+      "Trisirah adalah raksasa berkepala tiga yang menjadi salah satu panglima Alengka.",
+      "Wujud berkepala tiga menjadi tanda kesaktian dan kegagahannya di medan perang.",
+      "Ia gugur dalam pertempuran melawan pasukan Rama, seperti banyak panglima Alengka lainnya."
+    ],
+    kuis: [
+      { pertanyaan: "Berapa jumlah kepala Trisirah?", pilihan: ["Tiga", "Satu", "Sepuluh", "Lima"], benar: 0 },
+      { pertanyaan: "Trisirah mengabdi pada kerajaan mana?", pilihan: ["Alengka", "Ayodhya", "Kiskenda", "Mantili"], benar: 0 }
+    ]
+  },
+  "atikaya": {
+    isi: [
+      "Atikaya adalah putra Rahwana yang bertubuh besar dan dikenal sangat kuat di medan perang.",
+      "Ia maju memimpin pasukan membela ayahnya setelah banyak panglima Alengka gugur.",
+      "Dalam banyak versi kisah, Atikaya gugur oleh Laksmana."
+    ],
+    kuis: [
+      { pertanyaan: "Atikaya adalah putra siapa?", pilihan: ["Rahwana", "Rama", "Sugriwa", "Dasarata"], benar: 0 },
+      { pertanyaan: "Atikaya dikenal dengan sifat apa?", pilihan: ["Sangat kuat dalam pertempuran", "Sangat bijaksana", "Pendiam", "Ahli membangun"], benar: 0 }
+    ]
+  },
+  "narantaka": {
+    isi: [
+      "Narantaka adalah raksasa prajurit Alengka yang maju dalam barisan perang melawan pasukan wanara.",
+      "Ia tewas di tangan pasukan wanara, sebagaimana tertulis dalam kisah pertempuran Alengka.",
+      "Kisahnya menjadi bagian dari gambaran besar jatuhnya para panglima Rahwana satu per satu."
+    ],
+    kuis: [
+      { pertanyaan: "Narantaka tewas di tangan siapa?", pilihan: ["Pasukan wanara", "Para dewa", "Ayahnya", "Prahasta"], benar: 0 },
+      { pertanyaan: "Narantaka berasal dari pihak mana?", pilihan: ["Alengka", "Ayodhya", "Mantili", "Kiskenda"], benar: 0 }
+    ]
+  },
+  "dewantaka": {
+    isi: [
+      "Dewantaka adalah raksasa prajurit Alengka dan saudara Narantaka.",
+      "Ia ikut maju dalam pertempuran besar membela Rahwana.",
+      "Perannya menggambarkan banyaknya anggota keluarga dan pasukan yang ikut tenggelam dalam perang Alengka."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa saudara Dewantaka?", pilihan: ["Narantaka", "Anoman", "Sugriwa", "Rama"], benar: 0 },
+      { pertanyaan: "Dewantaka berperang membela siapa?", pilihan: ["Rahwana", "Rama", "Bharata", "Wibisana"], benar: 0 }
+    ]
+  },
+  "subahu": {
+    isi: [
+      "Subahu adalah raksasa yang bersama Marica mengganggu pertapaan para resi di hutan.",
+      "Resi Wiswamitra meminta Rama dan Laksmana melindungi upacaranya dari gangguan itu.",
+      "Rama menumpas Subahu, dan peristiwa ini menjadi salah satu ujian pertama Rama sebagai ksatria."
+    ],
+    kuis: [
+      { pertanyaan: "Apa yang dilakukan Subahu?", pilihan: ["Mengganggu pertapaan para resi", "Membangun jembatan", "Menjaga Shinta", "Memimpin wanara"], benar: 0 },
+      { pertanyaan: "Siapa yang meminta Rama menghadapi Subahu?", pilihan: ["Resi Wiswamitra", "Rahwana", "Sugriwa", "Prabu Janaka"], benar: 0 }
+    ]
+  },
+  "viradha": {
+    isi: [
+      "Viradha adalah raksasa penghuni hutan yang menghadang Rama, Laksmana, dan Shinta di awal pengasingan.",
+      "Ia sempat menyeret Shinta, tetapi dikalahkan oleh kedua kakak-beradik itu.",
+      "Menurut kisahnya, kematian Viradha membebaskannya dari kutukan yang membuatnya berwujud raksasa."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa yang dihadang Viradha?", pilihan: ["Rama, Laksmana, dan Shinta", "Pasukan wanara", "Rahwana", "Bharata"], benar: 0 },
+      { pertanyaan: "Apa dampak kematian Viradha menurut kisahnya?", pilihan: ["Terbebas dari kutukan", "Menjadi raja", "Menjadi dewa laut", "Berubah menjadi batu"], benar: 0 }
+    ]
+  },
+  "kabandha": {
+    isi: [
+      "Kabandha adalah raksasa berwujud mengerikan dengan kepala di perut, akibat sebuah kutukan.",
+      "Setelah dikalahkan oleh Rama dan Laksmana, ia terbebas dari wujudnya.",
+      "Sebagai balas budi, Kabandha menunjukkan agar Rama mencari bantuan Sugriwa untuk menemukan Shinta."
+    ],
+    kuis: [
+      { pertanyaan: "Apa ciri wujud Kabandha?", pilihan: ["Kepala di perut", "Bersayap", "Berekor panjang", "Bertanduk tiga"], benar: 0 },
+      { pertanyaan: "Siapa yang ditunjuk Kabandha sebagai sekutu Rama?", pilihan: ["Sugriwa", "Rahwana", "Indrajit", "Subahu"], benar: 0 }
+    ]
+  },
+  "kala-khara": {
+    isi: [
+      "Kala Khara adalah raksasa panglima yang menempati wilayah hutan tempat Rama menjalani pengasingan.",
+      "Setelah Sarpakenaka mengadu, ia memimpin pasukan menyerang pertapaan Rama bersama Kala Dusana.",
+      "Pasukan itu dikalahkan Rama, dan kekalahan ini membuat Rahwana turun tangan sendiri."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa yang mengadu hingga Khara menyerang Rama?", pilihan: ["Sarpakenaka", "Wibisana", "Kumbakarna", "Marica"], benar: 0 },
+      { pertanyaan: "Bersama siapa Kala Khara menyerang?", pilihan: ["Kala Dusana", "Anoman", "Sugriwa", "Jatayu"], benar: 0 }
+    ]
+  },
+  "kala-dusana": {
+    isi: [
+      "Kala Dusana adalah raksasa, saudara Kala Khara, yang ikut memimpin pasukan menyerang tempat pengasingan Rama.",
+      "Bersama pasukannya ia dikalahkan Rama.",
+      "Kekalahan Khara dan Dusana menjadi titik balik yang memicu rencana Rahwana menculik Shinta."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa saudara Kala Dusana?", pilihan: ["Kala Khara", "Narantaka", "Anila", "Nala"], benar: 0 },
+      { pertanyaan: "Apa dampak kekalahan Khara dan Dusana?", pilihan: ["Memicu Rahwana menculik Shinta", "Rama kembali ke Ayodhya", "Perang berakhir", "Wanara menyerah"], benar: 0 }
+    ]
+  },
+  "wil-kataksini": {
+    isi: [
+      "Wil Kataksini adalah raksasi penjaga taman Argasoka di Alengka.",
+      "Di taman itulah Dewi Shinta ditahan selama menunggu pertolongan Rama.",
+      "Ia mewakili para penjaga yang menjalankan perintah tanpa mempertanyakan, sementara Shinta tetap teguh pada kesetiaannya."
+    ],
+    kuis: [
+      { pertanyaan: "Apa tugas Wil Kataksini?", pilihan: ["Menjaga taman Argasoka", "Memimpin pasukan wanara", "Menjadi resi", "Membuat keris"], benar: 0 },
+      { pertanyaan: "Siapa yang ditahan di taman Argasoka?", pilihan: ["Dewi Shinta", "Dewi Kausalya", "Dewi Anjani", "Dewi Sumitra"], benar: 0 }
+    ]
+  },
+  "anila": {
+    isi: [
+      "Anila adalah panglima wanara, salah satu pemimpin dalam pasukan penyerbu Alengka.",
+      "Ia memimpin pasukannya dalam serangan terhadap benteng Alengka.",
+      "Bersama Nala, Nila, dan Anoman, ia mewakili kerja sama bangsa wanara dalam memenangkan perang."
+    ],
+    kuis: [
+      { pertanyaan: "Anila berasal dari bangsa apa?", pilihan: ["Wanara", "Raksasa", "Dewa", "Manusia"], benar: 0 },
+      { pertanyaan: "Apa peran Anila?", pilihan: ["Panglima pasukan wanara", "Raja Alengka", "Penjaga taman", "Dalang"], benar: 0 }
+    ]
+  },
+  "nila": {
+    isi: [
+      "Nila adalah panglima wanara yang turut membangun jembatan menuju Alengka bersama Nala.",
+      "Dalam pertempuran ia memimpin pasukan dan, dalam banyak versi, mengalahkan Patih Prahasta.",
+      "Nila melambangkan kecakapan memadukan keahlian membangun dan keberanian bertempur."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa yang membangun jembatan bersama Nila?", pilihan: ["Nala", "Rahwana", "Subahu", "Bharata"], benar: 0 },
+      { pertanyaan: "Nila adalah panglima dari bangsa mana?", pilihan: ["Wanara", "Raksasa", "Dewa", "Resi"], benar: 0 }
+    ]
+  },
+  "kapi-dwimukha": {
+    isi: [
+      "Kapi Dwimukha adalah prajurit wanara dalam pasukan Sugriwa.",
+      "Ia termasuk ribuan wanara yang ikut mencari Shinta dan menyerbu Alengka.",
+      "Meski namanya jarang disebut, ia mewakili kekuatan pasukan yang bekerja bersama."
+    ],
+    kuis: [
+      { pertanyaan: "Kapi Dwimukha berada di pasukan siapa?", pilihan: ["Sugriwa", "Rahwana", "Dasarata", "Janaka"], benar: 0 },
+      { pertanyaan: "Apa arti kata kapi dalam kelompok ini?", pilihan: ["Wanara atau kera", "Raksasa", "Dewa", "Resi"], benar: 0 }
+    ]
+  },
+  "kapi-vindha": {
+    isi: [
+      "Kapi Vindha adalah prajurit wanara dalam pasukan Sugriwa.",
+      "Ia ikut dalam pasukan yang menyeberangi lautan menuju Alengka.",
+      "Bersama prajurit lain, ia menggambarkan kebersamaan sebuah pasukan besar."
+    ],
+    kuis: [
+      { pertanyaan: "Kapi Vindha berasal dari bangsa apa?", pilihan: ["Wanara", "Raksasa", "Dewa", "Manusia"], benar: 0 },
+      { pertanyaan: "Di mana Kapi Vindha ikut berperang?", pilihan: ["Alengka", "Ayodhya", "Mantili", "Seram"], benar: 0 }
+    ]
+  },
+  "kapi-jenda": {
+    isi: [
+      "Kapi Jenda adalah prajurit wanara dalam pasukan Sugriwa.",
+      "Ia ikut berbaris bersama pasukan wanara lain dalam perjalanan menuju Alengka.",
+      "Perannya menunjukkan bahwa kemenangan Rama ditopang oleh banyak pihak, bukan hanya tokoh besar."
+    ],
+    kuis: [
+      { pertanyaan: "Kapi Jenda berada di pasukan siapa?", pilihan: ["Sugriwa", "Rahwana", "Prahasta", "Indrajit"], benar: 0 },
+      { pertanyaan: "Tujuan pasukan wanara?", pilihan: ["Membebaskan Shinta di Alengka", "Merebut Ayodhya", "Mencari harta", "Membangun candi"], benar: 0 }
+    ]
+  },
+  "kapi-sraba": {
+    isi: [
+      "Kapi Sraba adalah prajurit wanara dalam pasukan Sugriwa.",
+      "Ia termasuk pasukan yang ikut menyerbu Alengka.",
+      "Seperti prajurit wanara lainnya, ia mewakili kesetiaan pasukan kepada pimpinannya."
+    ],
+    kuis: [
+      { pertanyaan: "Kapi Sraba termasuk bangsa apa?", pilihan: ["Wanara", "Raksasa", "Dewa", "Resi"], benar: 0 },
+      { pertanyaan: "Siapa raja pasukan Kapi Sraba?", pilihan: ["Sugriwa", "Rahwana", "Wibisana", "Subali"], benar: 0 }
+    ]
+  },
+  "bukbis": {
+    isi: [
+      "Bukbis adalah raksasa penjaga di kerajaan Alengka.",
+      "Tokoh seperti ini menjadi bagian dari barisan penjaga kerajaan yang membela Rahwana.",
+      "Meski perannya kecil, penjaga dan prajurit raksasa menggambarkan besarnya kekuatan Alengka sebelum kalah."
+    ],
+    kuis: [
+      { pertanyaan: "Apa peran Bukbis?", pilihan: ["Penjaga di Alengka", "Resi di hutan", "Raja wanara", "Dewa langit"], benar: 0 },
+      { pertanyaan: "Bukbis termasuk kelompok apa?", pilihan: ["Bangsa Buto dan Raksasa", "Bangsa Wanara", "Dewa dan Resi", "Punakawan"], benar: 0 }
+    ]
+  },
+  "kala-suranimitta": {
+    isi: [
+      "Kala Suranimitta adalah raksasa prajurit dalam pasukan Alengka.",
+      "Ia ikut dalam barisan perang membela Rahwana menghadapi pasukan Rama.",
+      "Nama-nama prajurit seperti ini menegaskan skala perang besar antara Alengka dan pasukan wanara."
+    ],
+    kuis: [
+      { pertanyaan: "Kala Suranimitta berada di pihak siapa?", pilihan: ["Alengka", "Ayodhya", "Kiskenda", "Mantili"], benar: 0 },
+      { pertanyaan: "Apa perannya?", pilihan: ["Prajurit raksasa", "Dewa", "Resi", "Punakawan"], benar: 0 }
+    ]
+  },
+  "kala-wisungkara": {
+    isi: [
+      "Kala Wisungkara adalah raksasa prajurit dalam pasukan Alengka.",
+      "Ia ikut berperang dalam barisan raksasa yang membela Rahwana.",
+      "Seperti prajurit lainnya, ia mewakili pasukan yang setia pada rajanya hingga akhir perang."
+    ],
+    kuis: [
+      { pertanyaan: "Kala Wisungkara termasuk bangsa apa?", pilihan: ["Raksasa", "Wanara", "Dewa", "Manusia"], benar: 0 },
+      { pertanyaan: "Siapa raja yang dibelanya?", pilihan: ["Rahwana", "Rama", "Sugriwa", "Dasarata"], benar: 0 }
+    ]
+  },
+  "pratangga": {
+    isi: [
+      "Pratangga adalah raksasa prajurit dalam barisan pasukan Alengka.",
+      "Ia bertempur membela Rahwana menghadapi serbuan wanara.",
+      "Kisahnya mengingatkan bahwa perang melibatkan banyak pihak di luar tokoh-tokoh utama."
+    ],
+    kuis: [
+      { pertanyaan: "Pratangga berasal dari pihak mana?", pilihan: ["Alengka", "Ayodhya", "Kiskenda", "Mantili"], benar: 0 },
+      { pertanyaan: "Apa peran Pratangga?", pilihan: ["Prajurit raksasa", "Resi", "Raja", "Dewa"], benar: 0 }
+    ]
+  },
+  "kala-ditya": {
+    isi: [
+      "Kala Ditya adalah raksasa prajurit dalam barisan pasukan Rahwana.",
+      "Ia ikut maju dalam pertempuran di Alengka.",
+      "Bersama prajurit lain, ia menjadi bagian dari pasukan yang akhirnya dikalahkan oleh Rama dan sekutunya."
+    ],
+    kuis: [
+      { pertanyaan: "Kala Ditya mengabdi pada siapa?", pilihan: ["Rahwana", "Rama", "Sugriwa", "Bharata"], benar: 0 },
+      { pertanyaan: "Siapa yang akhirnya mengalahkan pasukan Alengka?", pilihan: ["Rama dan sekutunya", "Para dewa saja", "Kumbakarna", "Indrajit"], benar: 0 }
+    ]
+  }
+};
+
+// ---------------------------------------------------------------------
+// 2. ENTRI BARU
+// ---------------------------------------------------------------------
+// Catatan: koordinat adalah ESTIMASI dari pola koordinat yang sudah ada.
+// Cek visual di petamu dan geser jika pin tidak pas.
+const entriBaru = [
+  // ----- CERITA RAKYAT -----
+  {
+    id: "lutung-kasarung", judul: "Lutung Kasarung", daerah: "Jawa Barat", pulau: "jawa", kategori: "cerita",
+    koordinat: { x: 30.0, y: 76.2 },
+    sinopsis: "Putri bungsu yang disingkirkan kakaknya dan ditolong seekor lutung yang ternyata putra dewa.",
+    isi: [
+      "Prabu Tapa Agung memiliki beberapa putri. Yang tertua, Purbararang, iri pada adik bungsunya, Purbasari, lalu menyingkirkannya ke hutan.",
+      "Di hutan, Purbasari ditemani seekor lutung bernama Lutung Kasarung. Ia sebenarnya Guruminda, putra dewa yang dikutuk berwujud kera.",
+      "Berkat pertolongan Lutung Kasarung, Purbasari dibersihkan dari penyakitnya dan menang dalam adu panjang rambut melawan kakaknya.",
+      "Setelah kutukannya berakhir, Lutung Kasarung kembali menjadi Guruminda dan menikah dengan Purbasari."
+    ],
+    kuis: [
+      { pertanyaan: "Siapa sebenarnya Lutung Kasarung?", pilihan: ["Guruminda, putra dewa yang dikutuk", "Raja hutan", "Prajurit kerajaan", "Anak Purbararang"], benar: 0 },
+      { pertanyaan: "Mengapa Purbasari disingkirkan?", pilihan: ["Karena iri kakaknya, Purbararang", "Karena melanggar adat", "Karena kalah perang", "Karena ingin menjadi pertapa"], benar: 0 }
+    ]
+  },
+  {
+    id: "sri-tanjung", judul: "Sri Tanjung", daerah: "Jawa Timur", pulau: "jawa", kategori: "cerita",
+    koordinat: { x: 41.4, y: 82.2 },
+    sinopsis: "Kisah setia seorang istri yang menjadi asal-usul nama Banyuwangi.",
+    isi: [
+      "Sri Tanjung adalah istri Sidapaksa, patih kerajaan yang setia. Raja Sulakrama jatuh hati pada Sri Tanjung dan ingin menyingkirkan Sidapaksa.",
+      "Sang raja mengirim Sidapaksa pergi, lalu menuduh Sri Tanjung berbuat serong. Termakan fitnah, Sidapaksa marah.",
+      "Di tepi sungai, Sri Tanjung menyatakan bahwa jika ia bersalah, darahnya akan berbau busuk. Namun, jika ia suci, darahnya akan harum.",
+      "Setelah ia gugur, air sungai itu berbau harum. Sidapaksa pun menyadari kebenaran, dan sungai itu dinamai Banyuwangi, yang berarti air harum."
+    ],
+    kuis: [
+      { pertanyaan: "Apa arti nama Banyuwangi dalam cerita ini?", pilihan: ["Air harum", "Air deras", "Air suci", "Air dalam"], benar: 0 },
+      { pertanyaan: "Siapa suami Sri Tanjung?", pilihan: ["Sidapaksa", "Sulakrama", "Bandung Bondowoso", "Toar"], benar: 0 }
+    ]
+  },
+  {
+    id: "la-galigo", judul: "La Galigo", daerah: "Sulawesi Selatan", pulau: "sulawesi", kategori: "cerita",
+    koordinat: { x: 56.0, y: 54.0 },
+    sinopsis: "Epos besar Bugis tentang turunnya Batara Guru ke bumi dan pengembaraan Sawerigading.",
+    isi: [
+      "La Galigo adalah epos masyarakat Bugis yang dituturkan dalam bentuk naskah Sureq Galigo, salah satu karya sastra terpanjang di dunia.",
+      "Kisahnya bermula dari Batara Guru, putra penguasa langit, yang turun ke bumi untuk menjadi raja pertama.",
+      "Tokoh utamanya yang terkenal adalah Sawerigading, pengembara dan pelaut yang menjalani banyak petualangan lintas negeri.",
+      "Epos ini diakui UNESCO sebagai Ingatan Dunia (Memory of the World) pada tahun 2011."
+    ],
+    kuis: [
+      { pertanyaan: "La Galigo berasal dari masyarakat apa?", pilihan: ["Bugis", "Minang", "Batak", "Dayak"], benar: 0 },
+      { pertanyaan: "Siapa tokoh pengembara utama dalam La Galigo?", pilihan: ["Sawerigading", "Malin Kundang", "Toar", "Bandung Bondowoso"], benar: 0 }
+    ]
+  },
+  {
+    id: "bawang-merah-bawang-putih", judul: "Bawang Merah Bawang Putih", daerah: "Riau", pulau: "sumatra", kategori: "cerita",
+    koordinat: { x: 16.5, y: 36.0 },
+    sinopsis: "Dua saudari tiri yang watak dan nasibnya berlawanan, tentang ketulusan versus keserakahan.",
+    isi: [
+      "Bawang Putih adalah gadis baik hati, sedangkan Bawang Merah dan ibunya bersikap kasar dan sering menyuruhnya bekerja.",
+      "Suatu hari pakaian yang dicuci Bawang Putih hanyut di sungai. Dalam pencariannya, ia menolong seorang nenek.",
+      "Sebagai balasan, nenek menawarkan hadiah berupa labu. Bawang Putih memilih yang kecil, dan di dalamnya terdapat harta yang melimpah.",
+      "Bawang Merah yang serakah mencoba meniru, namun labu besar yang ia pilih justru berisi hal yang tidak menyenangkan."
+    ],
+    kuis: [
+      { pertanyaan: "Labu yang dipilih Bawang Putih berukuran apa?", pilihan: ["Kecil", "Besar", "Sangat besar", "Seukuran kepala"], benar: 0 },
+      { pertanyaan: "Pesan utama cerita ini adalah?", pilihan: ["Ketulusan membawa kebaikan, keserakahan membawa kerugian", "Kekuatan menentukan segalanya", "Harta adalah tujuan utama", "Merantau selalu berhasil"], benar: 0 }
+    ]
+  },
+
+  // ----- CANDI -----
+  {
+    id: "candi-prambanan", judul: "Candi Prambanan", daerah: "Yogyakarta", pulau: "jawa", kategori: "candi",
+    koordinat: { x: 36.4, y: 79.6 },
+    sinopsis: "Kompleks candi Hindu terbesar di Indonesia, dipersembahkan untuk Trimurti.",
+    isi: [
+      "Candi Prambanan adalah kompleks candi Hindu yang dibangun sekitar abad ke-9 Masehi dan dipersembahkan kepada tiga dewa utama, Trimurti: Brahma, Wisnu, dan Siwa.",
+      "Candi Siwa berdiri di tengah sebagai bangunan terbesar dan tertinggi. Dindingnya dihiasi relief kisah Ramayana yang dibaca berurutan mengelilingi candi.",
+      "Kompleks ini ditetapkan sebagai Situs Warisan Dunia UNESCO. Masyarakat juga mengaitkannya dengan legenda Roro Jonggrang."
+    ],
+    kuis: [
+      { pertanyaan: "Prambanan dipersembahkan kepada dewa apa?", pilihan: ["Trimurti: Brahma, Wisnu, dan Siwa", "Hanya Buddha", "Dewi Sri", "Batara Surya"], benar: 0 },
+      { pertanyaan: "Relief kisah apa yang menghiasi candi utama Prambanan?", pilihan: ["Ramayana", "Malin Kundang", "Sangkuriang", "Tantri"], benar: 0 }
+    ]
+  },
+  {
+    id: "candi-penataran", judul: "Candi Penataran", daerah: "Jawa Timur", pulau: "jawa", kategori: "candi",
+    koordinat: { x: 39.2, y: 81.4 },
+    sinopsis: "Kompleks candi Hindu terbesar di Jawa Timur, dekat Blitar, dari masa Kadiri hingga Majapahit.",
+    isi: [
+      "Candi Penataran terletak di Blitar, Jawa Timur, dan merupakan kompleks candi Hindu terbesar di provinsi itu.",
+      "Pembangunannya dimulai pada masa Kerajaan Kadiri dan diperluas pada masa Majapahit, sehingga kompleksnya terdiri dari banyak bangunan yang tersebar di satu halaman luas.",
+      "Reliefnya menggambarkan kisah-kisah seperti Ramayana dan Kresnayana, sehingga ia menjadi sumber penting untuk mempelajari seni dan keyakinan masa itu."
+    ],
+    kuis: [
+      { pertanyaan: "Di kota apa Candi Penataran berada?", pilihan: ["Blitar", "Magelang", "Bandung", "Padang"], benar: 0 },
+      { pertanyaan: "Candi Penataran dibangun hingga masa kerajaan apa?", pilihan: ["Majapahit", "Sriwijaya", "Mataram Islam", "Tarumanagara"], benar: 0 }
+    ]
+  },
+  {
+    id: "candi-muara-takus", judul: "Candi Muara Takus", daerah: "Riau", pulau: "sumatra", kategori: "candi",
+    koordinat: { x: 15.0, y: 36.5 },
+    sinopsis: "Kompleks candi Buddha tertua di Sumatra, di tepi Sungai Kampar.",
+    isi: [
+      "Candi Muara Takus adalah kompleks candi Buddha di Kabupaten Kampar, Riau, yang berada di tepi Sungai Kampar Kanan.",
+      "Bangunannya terbuat dari bata dan batu pasir, dengan beberapa bangunan utama seperti Candi Tua, Candi Bungsu, dan Stupa Mahligai.",
+      "Para ahli memperkirakan situs ini berasal dari masa awal berkembangnya agama Buddha di Sumatra, meski penanggalan pastinya masih diperdebatkan."
+    ],
+    kuis: [
+      { pertanyaan: "Candi Muara Takus berada di provinsi apa?", pilihan: ["Riau", "Jambi", "Bali", "Aceh"], benar: 0 },
+      { pertanyaan: "Candi Muara Takus merupakan candi dengan latar agama apa?", pilihan: ["Buddha", "Hindu", "Islam", "Kristen"], benar: 0 }
+    ]
+  },
+
+  // ----- TARIAN -----
+  {
+    id: "tari-pendet", judul: "Tari Pendet", daerah: "Bali", pulau: "nusa-tenggara", kategori: "tarian",
+    koordinat: { x: 42.6, y: 86.0 },
+    sinopsis: "Tarian persembahan Bali yang kini juga dipakai untuk menyambut tamu.",
+    isi: [
+      "Tari Pendet awalnya adalah tarian pemujaan yang dipentaskan di pura sebagai persembahan kepada para dewa.",
+      "Para penari membawa bokor berisi bunga dan menaburkannya dengan gerak yang lembut dan anggun.",
+      "Seiring waktu, Pendet berkembang menjadi tarian penyambutan, sehingga sering dipentaskan saat tamu datang."
+    ],
+    kuis: [
+      { pertanyaan: "Apa fungsi awal Tari Pendet?", pilihan: ["Persembahan di pura", "Tarian perang", "Hiburan di pasar", "Upacara panen"], benar: 0 },
+      { pertanyaan: "Apa yang dibawa para penari Pendet?", pilihan: ["Bokor berisi bunga", "Tombak", "Piring", "Kipas"], benar: 0 }
+    ]
+  },
+  {
+    id: "tari-piring", judul: "Tari Piring", daerah: "Sumatera Barat", pulau: "sumatra", kategori: "tarian",
+    koordinat: { x: 14.0, y: 40.5 },
+    sinopsis: "Tarian Minangkabau dengan piring di telapak tangan, lahir dari ungkapan syukur atas panen.",
+    isi: [
+      "Tari Piring berasal dari Minangkabau, Sumatera Barat. Penarinya memegang piring di kedua telapak tangan sambil menari dengan gerakan cepat tanpa menjatuhkan piring.",
+      "Tarian ini dahulu merupakan ungkapan rasa syukur kepada dewa atas hasil panen yang baik.",
+      "Dalam pertunjukan modern, sering ada bagian di mana penari menginjak pecahan piring, yang menunjukkan keterampilan dan keberanian."
+    ],
+    kuis: [
+      { pertanyaan: "Apa yang dipegang penari dalam Tari Piring?", pilihan: ["Piring", "Keris", "Kipas", "Selendang"], benar: 0 },
+      { pertanyaan: "Tari Piring berasal dari suku apa?", pilihan: ["Minangkabau", "Bugis", "Dayak", "Sunda"], benar: 0 }
+    ]
+  },
+  {
+    id: "tari-reog-ponorogo", judul: "Reog Ponorogo", daerah: "Jawa Timur", pulau: "jawa", kategori: "tarian",
+    koordinat: { x: 37.5, y: 79.8 },
+    sinopsis: "Pertunjukan kolosal Ponorogo dengan Singa Barong bermahkota bulu merak.",
+    isi: [
+      "Reog adalah kesenian khas Ponorogo, Jawa Timur. Ikonnya adalah Singa Barong, topeng singa besar bermahkota bulu merak yang sangat berat dan dibawa dengan kekuatan gigi penarinya.",
+      "Pertunjukannya melibatkan tokoh Warok yang gagah, penari Jathil yang menunggang kuda anyaman, dan Klono Sewandono sang raja.",
+      "Banyak cerita menghubungkan Reog dengan sindiran terhadap raja pada masa akhir Majapahit. Nama Singa Barong juga dikenal sebagai nama dapur keris."
+    ],
+    kuis: [
+      { pertanyaan: "Apa ikon utama Reog Ponorogo?", pilihan: ["Singa Barong dengan bulu merak", "Topeng Cakil", "Piring", "Naga"], benar: 0 },
+      { pertanyaan: "Penari berkuda anyaman dalam Reog disebut?", pilihan: ["Jathil", "Warok", "Sinden", "Dalang"], benar: 0 }
+    ]
+  },
+  {
+    id: "tari-pakarena", judul: "Tari Pakarena", daerah: "Sulawesi Selatan", pulau: "sulawesi", kategori: "tarian",
+    koordinat: { x: 54.5, y: 60.8 },
+    sinopsis: "Tarian lemah lembut dari Gowa yang menggambarkan keanggunan perempuan Makassar.",
+    isi: [
+      "Tari Pakarena berasal dari Gowa, Sulawesi Selatan, dan awalnya dipentaskan di lingkungan istana.",
+      "Gerakannya lambat dan mengalir, dengan penari perempuan yang memegang kipas sambil diiringi musik tradisional.",
+      "Tarian ini melambangkan kelembutan, kesopanan, dan kesetiaan perempuan Makassar."
+    ],
+    kuis: [
+      { pertanyaan: "Dari kabupaten mana Tari Pakarena berasal?", pilihan: ["Gowa", "Ponorogo", "Karo", "Flores"], benar: 0 },
+      { pertanyaan: "Bagaimana ciri gerakan Tari Pakarena?", pilihan: ["Lambat dan mengalir", "Cepat dan menghentak", "Melompat tinggi", "Berputar tanpa henti"], benar: 0 }
+    ]
+  },
+  {
+    id: "tari-cakalele", judul: "Tari Cakalele", daerah: "Maluku", pulau: "maluku", kategori: "tarian",
+    koordinat: { x: 72.5, y: 56.5 },
+    sinopsis: "Tarian perang Maluku dengan parang dan perisai, menggambarkan keberanian prajurit.",
+    isi: [
+      "Cakalele adalah tarian perang dari Maluku yang dipentaskan dengan parang dan perisai (salawaku).",
+      "Para penari yang umumnya mengenakan pakaian berwarna menyala menari diiringi tifa dan gong sambil berseru dan menghentak.",
+      "Tarian ini menggambarkan semangat dan keberanian prajurit, dan kini sering dipentaskan dalam upacara adat serta penyambutan tamu."
+    ],
+    kuis: [
+      { pertanyaan: "Apa nama perisai yang dipakai dalam Cakalele?", pilihan: ["Salawaku", "Landeyan", "Warangka", "Pamor"], benar: 0 },
+      { pertanyaan: "Apa jenis Tari Cakalele?", pilihan: ["Tarian perang", "Tarian panen", "Tarian pernikahan", "Tarian bulan"], benar: 0 }
+    ]
+  },
+  {
+    id: "tari-tor-tor", judul: "Tari Tor-tor", daerah: "Sumatera Utara", pulau: "sumatra", kategori: "tarian",
+    koordinat: { x: 11.4, y: 24.8 },
+    sinopsis: "Tarian adat Batak yang diiringi gondang dan biasa hadir dalam upacara.",
+    isi: [
+      "Tor-tor adalah tarian adat masyarakat Batak di Sumatera Utara, diiringi musik gondang.",
+      "Gerakannya yang berpusat pada gerak tangan dan hentakan kaki menyampaikan penghormatan dan rasa syukur.",
+      "Tor-tor biasa ditarikan dalam upacara adat seperti pernikahan dan acara kebersamaan keluarga."
+    ],
+    kuis: [
+      { pertanyaan: "Tor-tor berasal dari masyarakat apa?", pilihan: ["Batak", "Bugis", "Sunda", "Dayak"], benar: 0 },
+      { pertanyaan: "Apa nama musik pengiring Tor-tor?", pilihan: ["Gondang", "Gamelan", "Kolintang", "Angklung"], benar: 0 }
+    ]
+  }
+];
+
+// ---------------------------------------------------------------------
+// GENERATOR ISI + KUIS UNTUK DAPUR KERIS DAN TOMBAK
+// Hanya memakai informasi yang sudah ada di `sinopsis`, tanpa fakta baru.
+// ---------------------------------------------------------------------
+function _hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+function _kapital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function _huruf(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
+
+function _urai(sinopsis) {
+  const m = sinopsis.match(/^(.*?)\.\s*Melambangkan\s+(.*?)\.?$/);
+  return m ? { ciri: m[1].trim(), makna: m[2].trim() } : null;
+}
+
+function _susunPilihan(benar, pengecoh, kunci) {
+  const opsi = pengecoh.slice(0, 3);
+  const posisi = _hash(kunci) % (opsi.length + 1);
+  opsi.splice(posisi, 0, benar);
+  return { pilihan: opsi, benar: posisi };
+}
+
+const _istilah = {
+  "kembang kacang": "bagian di pangkal bilah yang menonjol dan melengkung, bentuknya mirip belalai gajah",
+  "pejetan": "cekungan di pangkal bilah",
+  "sogokan": "alur memanjang pada bilah",
+  "lambe gajah": "tonjolan di pangkal bilah yang menyerupai bibir gajah",
+  "tikel alis": "lekukan di pangkal bilah yang bentuknya menyerupai alis",
+  "gandik": "bagian pangkal bilah tempat ricikan-ricikan dipahat"
+};
+
+function _infoLuk(entri) {
+  const m = entri.sinopsis.match(/luk\s+([a-z]+(?:\s+belas)?(?:\s+atau\s+[a-z]+)?)/i);
+  if (m) return `Bilahnya berkelok (luk) dengan jumlah luk: ${m[1].toLowerCase()}.`;
+  if (/lurus/i.test(entri.kelompok)) return "Bilahnya lurus, tanpa kelokan (luk).";
+  return "";
+}
+
+function bangunKontenDapur(entri, semua, kosong) {
+  const u = _urai(entri.sinopsis);
+  if (!u) return null;
+  const saudara = semua
+    .filter((e) => e.kategori === entri.kategori && e.id !== entri.id && kosong.has(e.id) && e.sinopsis)
+    .map((e) => ({ e, u: _urai(e.sinopsis) }))
+    .filter((x) => x.u)
+    .sort((a, b) => _hash(entri.id + a.e.id) - _hash(entri.id + b.e.id));
+
+  const maknaLain = [...new Set(saudara.map((x) => _kapital(x.u.makna)).filter((t) => t !== _kapital(u.makna)))];
+  const ciriLain = [...new Set(saudara.map((x) => _kapital(x.u.ciri)).filter((t) => t !== _kapital(u.ciri)))];
+  if (maknaLain.length < 3 || ciriLain.length < 3) return null;
+
+  const kelompokLain = [...new Set(
+    semua.filter((e) => e.kategori === entri.kategori && e.kelompok && e.kelompok !== entri.kelompok).map((e) => e.kelompok)
+  )].sort((a, b) => _hash(entri.id + a) - _hash(entri.id + b));
+
+  const jenis = entri.kategori === "keris" ? "keris" : "tombak";
+  const lcSin = entri.sinopsis.toLowerCase();
+  const adaIstilah = Object.keys(_istilah).filter((t) => lcSin.includes(t));
+  const glosarium = adaIstilah.length
+    ? "Istilah: " + adaIstilah.map((t) => `${t} ialah ${_istilah[t]}`).join("; ") + "."
+    : "";
+  const luk = _infoLuk(entri);
+
+  const penutup = jenis === "keris"
+    ? "Bilah keris ditempa oleh seorang empu dengan lapisan logam berpamor, sehingga tidak ada dua keris yang benar-benar sama. Makna dapur menjadi harapan dan pengingat bagi pemiliknya."
+    : "Seperti keris, bilah tombak ditempa oleh seorang empu dan dikelompokkan menurut dapur. Tombak pusaka dihormati sebagai lambang kewibawaan dan perlindungan.";
+
+  const isi = [
+    `${entri.judul} termasuk dapur ${jenis} dalam kelompok "${entri.kelompok}".${luk ? " " + luk : ""}`,
+    `Ciri bilahnya: ${_huruf(u.ciri)}.${glosarium ? " " + glosarium : ""}`,
+    `Secara filosofis, dapur ini melambangkan ${u.makna}.`,
+    penutup
+  ];
+
+  const q1 = _susunPilihan(_kapital(u.makna), maknaLain, entri.id + "m");
+  const q2 = _susunPilihan(_kapital(u.ciri), ciriLain, entri.id + "c");
+  const kuis = [
+    { pertanyaan: `Apa makna filosofis dapur ${entri.judul}?`, ...q1 },
+    { pertanyaan: `Manakah ciri bilah dapur ${entri.judul}?`, ...q2 }
+  ];
+  if (kelompokLain.length >= 2) {
+    const q3 = _susunPilihan(entri.kelompok, kelompokLain, entri.id + "k");
+    kuis.push({ pertanyaan: `${entri.judul} termasuk dalam kelompok apa?`, ...q3 });
+  }
+  return { isi, kuis };
+}
+
+// ---------------------------------------------------------------------
+// PENGGABUNG
+// ---------------------------------------------------------------------
+function gabungkan(dataAsli) {
+  // salin dalam supaya data asli tidak berubah
+  const data = JSON.parse(JSON.stringify(dataAsli));
+
+  // 1) perbaikan data lama
+  data.forEach((d) => { if (perbaikan[d.id]) perbaikan[d.id](d); });
+
+  // 2) isi + kuis untuk wayang yang sudah ditulis tangan
+  data.forEach((d) => {
+    if (!d.isi && lengkapan[d.id]) { d.isi = lengkapan[d.id].isi; d.kuis = lengkapan[d.id].kuis; }
+  });
+
+  // 3) entri baru (lewati jika id sudah ada)
+  const ada = new Set(data.map((d) => d.id));
+  entriBaru.forEach((e) => { if (!ada.has(e.id)) data.push(JSON.parse(JSON.stringify(e))); });
+
+  // 4) dapur keris/tombak: bangun otomatis dari sinopsis
+  const snapshot = data.slice();
+  const kosong = new Set(snapshot.filter((d) => !d.isi).map((d) => d.id)); // tetap, agar hasil tidak bergantung urutan
+  data.forEach((d) => {
+    if (!d.isi && (d.kategori === "keris" || d.kategori === "tombak")) {
+      const k = bangunKontenDapur(d, snapshot, kosong);
+      if (k) { d.isi = k.isi; d.kuis = k.kuis; }
+    }
+  });
+  return data;
+}
+
+// ---------------------------------------------------------------------
+// VALIDATOR
+// ---------------------------------------------------------------------
+function validasi(data) {
+  const kategoriSah = ["cerita", "candi", "tarian", "wayang", "keris", "tombak"];
+  const pulauSah = ["sumatra", "jawa", "kalimantan", "sulawesi", "nusa-tenggara", "maluku", "papua"];
+  const perluPeta = ["cerita", "candi", "tarian"];
+  const galat = [], peringatan = [], ids = new Map(), judulKategori = new Map();
+  let tanpaIsi = 0;
+
+  data.forEach((d, i) => {
+    const t = `[${i}] ${d.id || "(tanpa id)"}`;
+    ["id", "judul", "daerah", "kategori", "sinopsis"].forEach((f) => { if (!d[f]) galat.push(`${t}: field "${f}" kosong`); });
+    if (d.id) { if (ids.has(d.id)) galat.push(`${t}: id duplikat`); ids.set(d.id, true); }
+    if (d.kategori && !kategoriSah.includes(d.kategori)) galat.push(`${t}: kategori "${d.kategori}" tidak dikenal`);
+
+    if (perluPeta.includes(d.kategori)) {
+      if (!d.koordinat) galat.push(`${t}: koordinat hilang`);
+      else if (!(d.koordinat.x >= 0 && d.koordinat.x <= 100 && d.koordinat.y >= 0 && d.koordinat.y <= 100)) galat.push(`${t}: koordinat di luar 0-100`);
+      if (!pulauSah.includes(d.pulau)) galat.push(`${t}: pulau "${d.pulau}" tidak valid`);
+    }
+
+    if (d.isi && !Array.isArray(d.isi)) galat.push(`${t}: isi bukan array`);
+    if (d.kuis) {
+      if (!d.isi) peringatan.push(`${t}: punya kuis tapi tanpa isi`);
+      d.kuis.forEach((q, j) => {
+        if (!q.pertanyaan || !Array.isArray(q.pilihan) || q.pilihan.length < 2) galat.push(`${t} kuis[${j}]: bentuk salah`);
+        else {
+          if (!(Number.isInteger(q.benar) && q.benar >= 0 && q.benar < q.pilihan.length)) galat.push(`${t} kuis[${j}]: indeks "benar" di luar jangkauan`);
+          if (new Set(q.pilihan).size !== q.pilihan.length) galat.push(`${t} kuis[${j}]: pilihan duplikat`);
+        }
+      });
+    }
+    if (!d.isi) tanpaIsi++;
+
+    const kj = `${d.kategori}|${(d.judul || "").toLowerCase()}`;
+    if (judulKategori.has(kj)) galat.push(`${t}: judul sama dalam kategori yang sama`);
+    judulKategori.set(kj, true);
+  });
+
+  return { total: data.length, tanpaIsi, galat, peringatan };
+}
+
+if (typeof module !== "undefined") module.exports = { gabungkan, validasi, perbaikan, lengkapan, entriBaru, bangunKontenDapur };
+dataBudaya = gabungkan(dataBudaya);
+const dataLengkap = dataBudaya;

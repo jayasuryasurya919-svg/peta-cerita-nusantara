@@ -1,166 +1,185 @@
-# Peta Budaya Nusantara (PBN)
+# Peta Cerita Nusantara (PBN)
 
-Situs edukatif interaktif untuk mengenal budaya Indonesia: cerita rakyat, candi
-dan tarian ditampilkan sebagai pin di **peta interaktif**, sedangkan wayang,
-keris, dan tombak ditampilkan sebagai **galeri** karena tidak terikat satu titik
-lokasi. Dibuat untuk **2026 International Digital Coding Competition — Web
-Development Division**.
+Situs edukatif interaktif untuk menjelajahi budaya Indonesia. Cerita rakyat, candi, dan tarian ditampilkan sebagai pin pada peta interaktif; wayang, keris, dan tombak ditampilkan dalam galeri. Proyek ini dikembangkan untuk **2026 International Digital Coding Competition — Web Development Division**.
 
-🔗 Live demo: *(isi link Netlify/Vercel/GitHub Pages di sini)*
+**Demo langsung:** belum tersedia. Kompetisi meminta URL situs yang sudah di-host serta tautan repositori publik.
 
 ---
 
-## Fitur
+# Fitur
 
-- **Peta interaktif berbasis SVG**: peta kepulauan Indonesia dibuat dari data
-  geografis publik (lihat *Sumber Aset*), bukan gambar jadi. Pin dibuat otomatis
-  dari data, dengan ikon dan warna berbeda untuk cerita rakyat, candi, dan tarian.
-- **Filter per pulau dan pencarian real-time** pada peta.
-- **Galeri Wayang, Keris, dan Tombak** yang dikelompokkan per golongan
-  (misalnya Punakawan, Bangsa Wanara, Dapur Keris Luk 7 dan Luk 9), lengkap
-  dengan badge ikon dan warna aksen per golongan.
-- **Halaman detail** (`detail.html?id=...`): satu halaman melayani semua konten,
-  dengan navigasi sebelumnya/selanjutnya dalam kategori yang sama.
-- **Kuis interaktif** dengan penilaian otomatis pada konten yang memiliki soal.
-- **Status "sudah dibaca"** tersimpan di `localStorage` browser, tanpa server dan
-  tanpa database.
-- **Ki Semar**, widget panduan yang muncul otomatis pada kunjungan pertama dan
-  bisa dibuka lagi kapan saja.
-- **Efek suara bernuansa gamelan** pada pin dan kuis.
-- **Animasi dan tampilan**: peta muncul bertahap per pulau, pulsa pada pin, popup
-  3D, kartu galeri muncul bertahap, progress bar baca dengan ikon keris, efek
-  muncul saat scroll, motif batik tipis di latar, dan scrollbar kustom.
-- **Halaman Tentang** dengan statistik konten yang dihitung otomatis dari data.
-- Dibangun dengan **HTML, CSS, dan JavaScript murni** tanpa framework dan tanpa
-  database server, sesuai ketentuan lomba.
+- Peta interaktif berbasis SVG dengan pin untuk cerita rakyat, candi, dan tarian.
+- Filter wilayah pulau dan pencarian untuk membantu menemukan konten pada peta.
+- Galeri Wayang, Keris, dan Tombak dengan pengelompokan konten.
+- Halaman detail dinamis (`detail.html?id=...`) dengan navigasi ke konten sebelumnya dan berikutnya dalam kategori yang sama.
+- Kuis interaktif dengan pemeriksaan jawaban dan skor otomatis pada konten yang menyediakan soal.
+- Status baca yang disimpan di "localStorage" browser.
+- Ki Semar, widget panduan penggunaan situs.
+- Efek suara yang dihasilkan oleh browser melalui Web Audio API; pemutaran bergantung pada dukungan browser dan interaksi pengguna.
+- Animasi dan indikator progres membaca pada halaman detail.
+- Halaman Tentang dengan statistik yang dihitung dari dataset gabungan.
+- Desain responsif dan beberapa dukungan aksesibilitas, termasuk indikator fokus keyboard serta preferensi pengurangan gerakan.
 
----
+> Catatan: daftar fitur menjelaskan implementasi yang tersedia pada kode. Perilaku akhir tetap perlu diuji pada browser dan perangkat target setelah perubahan atau deployment.
 
-## Isi Konten
 
-| Kategori | Jumlah | Tampil di |
-|---|---|---|
-| Cerita rakyat | 11 | Peta |
-| Candi | 2 | Peta |
-| Tarian | 2 | Peta |
+# Isi Konten
+
+Jumlah berikut merupakan isi dataset gabungan yang dimuat dari `js/data-budaya.js`.
+
+| Kategori | Jumlah entri | Tampilan |
+|---|---:|---|
+| Cerita rakyat | 15 | Peta dan halaman detail |
+| Candi | 5 | Peta dan halaman detail |
+| Tarian | 8 | Peta dan halaman detail |
 | Tokoh wayang | 65 | Galeri Wayang |
 | Dapur keris | 45 | Galeri Keris |
 | Dapur tombak | 15 | Galeri Tombak |
+| Total | 153 | |
 
-Sebagian item memiliki teks lengkap dan kuis, sisanya berupa kartu sinopsis
-singkat yang dapat dilengkapi bertahap tanpa mengubah kode.
+Kelengkapan isi tiap entri tidak selalu sama. Sebagian entri memiliki teks cerita dan kuis, sementara sebagian lainnya menggunakan sinopsis singkat.
 
----
 
-## Struktur Proyek
+# Struktur Proyek
 
-```
-peta-budaya-nusantara/
-├── index.html          # Beranda
-├── peta.html           # Peta interaktif
-├── wayang.html         # Galeri wayang
-├── keris.html          # Galeri keris
-├── tombak.html         # Galeri tombak
-├── detail.html         # Halaman detail (template, diisi dinamis lewat JS)
-├── tentang.html        # Tentang situs dan sumber aset
+peta-cerita-nusantara/
+├── index.html
+├── peta.html
+├── wayang.html
+├── keris.html
+├── tombak.html
+├── detail.html
+├── tentang.html
 ├── css/
-│   ├── style.css       # Variabel warna, navbar, footer, tombol, Ki Semar
-│   ├── peta.css        # Peta, pin, filter, popup
-│   ├── galeri.css      # Kartu dan pengelompokan galeri
-│   ├── cerita.css      # Halaman detail, kuis, progress bar
-│   └── tentang.css     # Halaman Tentang
+│   ├── style.css
+│   ├── peta.css
+│   ├── galeri.css
+│   ├── cerita.css
+│   └── tentang.css
 ├── js/
-│   ├── data-budaya.js  # Seluruh data konten (satu sumber data)
-│   ├── peta.js         # Render pin, filter, pencarian, popup
-│   ├── galeri.js       # Render galeri dan pengelompokan
-│   ├── detail.js       # Halaman detail, kuis, navigasi, progress bar
-│   ├── tentang.js      # Statistik konten
-│   ├── semar.js        # Widget panduan Ki Semar
-│   └── audio.js        # Efek suara
+│   ├── data-budaya.js
+│   ├── peta.js
+│   ├── galeri.js
+│   ├── detail.js
+│   ├── tentang.js
+│   ├── semar.js
+│   └── audio.js
 ├── assets/
+│   ├── logo-peta-cerita.svg
 │   └── peta-indonesia.svg
 └── README.md
 ```
 
 ---
 
-## Cara Menjalankan
+`js/data-budaya.js` memuat data utama, pelengkapan, dan fungsi penggabungan. Berkas ini dimuat sebelum skrip fitur pada setiap halaman.
 
-Peta SVG dimuat lewat `fetch()`, sehingga situs **harus dijalankan lewat server
-lokal**, bukan dibuka langsung dengan klik dua kali (`file://`).
+## Cara Menjalankan Secara Lokal
 
-1. Clone atau unduh repo ini.
-2. Jalankan lewat salah satu cara berikut:
-   - **VS Code**: pasang ekstensi *Live Server*, klik kanan `index.html`, pilih
-     "Open with Live Server".
-   - **Python**: `python -m http.server`, lalu buka `http://localhost:8000`.
-3. Buka `index.html` di browser.
+Peta SVG dimuat melalui `fetch()`. Karena itu, jalankan proyek melalui server lokal, bukan dengan membuka berkas `index.html` langsung menggunakan alamat `file://`.
+
+### Opsi 1 — VS Code Live Server
+
+1. Buka folder proyek di VS Code.
+2. Pasang ekstensi **Live Server** jika belum tersedia.
+3. Klik kanan `index.html`, lalu pilih **Open with Live Server**.
+4. Browser akan membuka situs melalui alamat lokal.
+
+### Opsi 2 — Python
+
+1. Buka terminal di folder utama proyek.
+2. Jalankan:
+
+   ```bash
+   python -m http.server 8000
+   ```
+
+3. Buka `http://localhost:8000` di browser.
 
 ---
 
-## Menambah Konten Baru
+## Menambah Konten
 
-Semua konten berada di `js/data-budaya.js` dalam satu array `dataBudaya`.
-Tambahkan satu objek baru, tanpa mengubah HTML.
+Data utama, perbaikan, pelengkapan isi, dan entri baru berada dalam satu berkas, `js/data-budaya.js`. Setelah digabung, array `dataLengkap` digunakan oleh halaman situs.
 
-Konten yang tampil di **peta** (cerita, candi, tarian) wajib punya `pulau` dan
-`koordinat`:
+### Konten peta
+
+Cerita rakyat, candi, dan tarian yang ditampilkan di peta membutuhkan `pulau` dan `koordinat`.
 
 ```js
 {
-  id: "nama-unik",
-  judul: "Judul",
-  daerah: "Nama Provinsi",
-  pulau: "jawa",                    // sama persis dengan id grup di SVG dan tab filter
-  kategori: "cerita",               // cerita | candi | tarian
-  koordinat: { x: 00.0, y: 00.0 },  // posisi pin dalam persen
+  id: "id-unik",
+  judul: "Judul konten",
+  daerah: "Nama daerah",
+  pulau: "jawa",
+  kategori: "cerita", // cerita | candi | tarian
+  koordinat: { x: 30.0, y: 70.0 },
   sinopsis: "Ringkasan singkat.",
-  isi: ["Paragraf 1...", "Paragraf 2..."],   // opsional
-  kuis: [{ pertanyaan: "...", pilihan: ["A", "B", "C", "D"], benar: 1 }]  // opsional
+  isi: ["Paragraf pertama.", "Paragraf kedua."],
+  kuis: [
+    {
+      pertanyaan: "Contoh pertanyaan?",
+      pilihan: ["Pilihan A", "Pilihan B", "Pilihan C", "Pilihan D"],
+      benar: 1
+    }
+  ]
 }
 ```
 
-Konten **galeri** (wayang, keris, tombak) tidak memakai `pulau` dan `koordinat`,
-tetapi memakai `kelompok` agar tampil terkelompok:
+`id` harus unik. Nilai `pulau` harus sesuai dengan ID wilayah pada peta SVG dan filter yang digunakan proyek. Koordinat pin menggunakan nilai persentase sesuai sistem koordinat yang diterapkan di kode peta.
+
+### Konten galeri
+
+Konten wayang, keris, dan tombak menggunakan `kelompok` untuk pengelompokan galeri dan tidak membutuhkan koordinat peta.
 
 ```js
-{ id: "nama-unik", judul: "Judul", daerah: "Jawa", kategori: "wayang",
-  kelompok: "Punakawan", sinopsis: "Ringkasan singkat." }
+{
+  id: "id-unik",
+  judul: "Judul konten",
+  daerah: "Nama daerah",
+  kategori: "wayang",
+  kelompok: "Nama kelompok",
+  sinopsis: "Ringkasan singkat."
+}
 ```
+
+Sesuaikan struktur objek dengan kategori dan properti yang dipakai oleh komponen terkait sebelum menambahkan konten baru.
 
 ---
 
-## Sumber Aset dan Konten
+## Sumber Aset, Konten, dan Transparansi
 
-- **Peta Indonesia** (`assets/peta-indonesia.svg`): dibuat dari data
-  [Natural Earth](https://www.naturalearthdata.com/) (domain publik), disederhanakan
-  dan dikelompokkan menjadi tujuh wilayah pulau memakai skrip Python.
-- **Font**: Playfair Display, Cinzel, dan Poppins dari Google Fonts.
-- **Ikon, pin, dan motif batik**: digambar sendiri dalam bentuk SVG.
-- **Efek suara**: memakai berkas di `assets/audio/` bila tersedia. Bila tidak ada,
-  bunyi dibuat langsung oleh browser lewat Web Audio API, sehingga tidak ada
-  aset suara pihak ketiga yang wajib disertakan. *(Jika memakai sampel dari
-  Freesound, cantumkan pembuat dan lisensinya di sini.)*
-- **Cerita rakyat, candi, tarian, dan tokoh wayang**: ditulis ulang dengan kata-kata
-  sendiri berdasarkan kisah dan pengetahuan budaya yang beredar luas. Daftar
-  tokoh wayang disusun dari daftar tokoh Ramayana dan Punakawan.
-- **Dapur keris dan tombak**: nama dapur, ciri bilah, dan makna filosofisnya disusun dari ringkasan pakem dapur Jawa.
-  *(Isi di sini referensi yang dipakai untuk memverifikasi, misalnya buku atau situs museum.)*
+- **Peta Indonesia:** berkas `assets/peta-indonesia.svg` dibuat dari data Natural Earth yang disebut sebagai domain publik pada proyek ini: <https://www.naturalearthdata.com/>.
+- **Font:** Playfair Display, Cinzel, dan Poppins dimuat melalui Google Fonts, sehingga koneksi internet diperlukan agar font eksternal dapat diambil.
+- **Ikon dan pin:** menggunakan SVG di dalam proyek.
+- **Efek suara:** menggunakan Web Audio API. Jika aset suara eksternal ditambahkan di masa mendatang, cantumkan sumber dan lisensinya.
+- **Konten budaya:** cerita dan keterangan dirangkum atau ditulis ulang berdasarkan kisah dan pengetahuan budaya yang dikenal luas. Untuk penggunaan edukasi atau publikasi, verifikasi informasi sejarah, nama lokal, dan variasi tradisi dengan sumber tepercaya, termasuk sumber budaya daerah atau museum.
+- **Penggunaan AI:** Claude (Anthropic) digunakan untuk diskusi arsitektur, penjelasan konsep, pembuatan skrip konversi peta, dan saran debugging. Kode aplikasi final dan konten ditulis oleh peserta. Aturan kompetisi membatasi AI sebagai bantuan belajar atau debugging; penggunaan untuk diskusi arsitektur dan pembuatan skrip konversi peta perlu diklarifikasi kepada panitia sebelum pengumpulan.
 
 ---
 
 ## Teknologi
 
-- HTML5, CSS3 (Custom Properties, Flexbox, Grid, CSS Animations)
+- HTML5 dan CSS3
 - JavaScript (ES6+) tanpa framework
-- Web Storage API (`localStorage`) tanpa database server
-- Web Audio API (cadangan efek suara)
 - SVG untuk peta dan ikon
+- Web Storage API (`localStorage`) untuk status baca
+- Web Audio API untuk efek suara
+
+Aplikasi tidak memerlukan database server. Status baca tersimpan secara lokal pada browser yang digunakan dan tidak otomatis tersinkronisasi ke perangkat lain.
+
+---
+
+## Pengujian dan Batasan
+
+- Uji peta, pencarian, filter, galeri, kuis, navigasi detail, dan status baca setelah melakukan perubahan.
+- Uji tampilan pada beberapa lebar layar dan navigasi keyboard.
+- Periksa Console browser dan Network panel saat menjalankan situs melalui server lokal.
+- Periksa kembali akurasi konten budaya dan sumber aset sebelum publikasi.
+- Pengujian statis tidak menggantikan pengujian langsung pada browser dan perangkat target.
 
 ---
 
 ## Lisensi
 
-Dibuat untuk keperluan kompetisi. Data peta bersumber dari Natural Earth (domain
-publik). Cerita rakyat dan pengetahuan budaya yang digunakan merupakan milik
-bersama masyarakat Indonesia.
+Proyek ini disiapkan untuk keperluan kompetisi. Pastikan hak penggunaan setiap aset eksternal dan atribusi sumber yang digunakan sesuai dengan lisensinya sebelum distribusi atau publikasi.
